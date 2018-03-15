@@ -1,11 +1,24 @@
+plugins {
+    id "net.ltgt.apt" version "0.10"
+    id 'java'
+    id 'application'
+}
+
+ext {
+    libs = [
+            lwjgl  : '3.1.6',
+            joml   : '1.2.0-SNAPSHOT',
+            junit  : '4.12',
+            mockito: '1.10.19',
+            dagger2: '2.15'
+    ]
+    plugs = [
+            'nla': '0.10',
+    ]
+}
+
 group 'com.theopus'
-version '1.0-SNAPSHOT'
-
-apply plugin: 'java'
-apply plugin: 'application'
-
 sourceCompatibility = 1.8
-
 mainClassName = "com.theopus.core.Hello"
 
 repositories {
@@ -13,32 +26,32 @@ repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 
-project.ext.lwjglVersion = "3.1.6"
-
-
 dependencies {
-    compile group: 'org.joml', name: 'joml-camera', version:'1.2.0-SNAPSHOT'
-    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}"
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}"
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}"
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:"${lwjglVersion}"
+    compile "org.joml:joml-camera:${libs.joml}"
+    compile "org.lwjgl:lwjgl:${libs.lwjgl}"
+    compile "org.lwjgl:lwjgl-glfw:${libs.lwjgl}"
+    compile "org.lwjgl:lwjgl-opengl:${libs.lwjgl}"
+    compile "org.lwjgl:lwjgl-stb:${libs.lwjgl}"
 
-    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}", classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}", classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}", classifier:'natives-macos'
+    compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-windows"
+    compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-linux"
+    compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-macos"
 
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}", classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}", classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}", classifier:'natives-macos'
+    compile "org.lwjgl:lwjgl-opengl:${libs.lwjgl}:natives-windows"
+    compile "org.lwjgl:lwjgl-opengl:${libs.lwjgl}:natives-linux"
+    compile "org.lwjgl:lwjgl-opengl:${libs.lwjgl}:natives-macos"
 
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}", classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}", classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}", classifier:'natives-macos'
+    compile "org.lwjgl:lwjgl-glfw:${libs.lwjgl}:natives-windows"
+    compile "org.lwjgl:lwjgl-glfw:${libs.lwjgl}:natives-linux"
+    compile "org.lwjgl:lwjgl-glfw:${libs.lwjgl}:natives-macos"
 
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:"${lwjglVersion}", classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:"${lwjglVersion}", classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:"${lwjglVersion}", classifier:'natives-macos'
+    compile "org.lwjgl:lwjgl-openal:${libs.lwjgl}:natives-windows"
+    compile "org.lwjgl:lwjgl-openal:${libs.lwjgl}:natives-linux"
+    compile "org.lwjgl:lwjgl-openal:${libs.lwjgl}:natives-macos"
 
+    compile "com.google.dagger:dagger:${libs.dagger2}"
+    apt "com.google.dagger:dagger-compiler:${libs.dagger2}"
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile "org.mockito:mockito-all:${libs.mockito}"
+    testCompile "junit:junit:${libs.junit}"
 }
