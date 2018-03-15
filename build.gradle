@@ -1,0 +1,44 @@
+group 'com.theopus'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+mainClassName = "com.theopus.core.Hello"
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+project.ext.lwjglVersion = "3.1.6"
+
+
+dependencies {
+    compile group: 'org.joml', name: 'joml-camera', version:'1.2.0-SNAPSHOT'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}"
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}"
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}"
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:"${lwjglVersion}"
+
+    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}", classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}", classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:"${lwjglVersion}", classifier:'natives-macos'
+
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}", classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}", classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:"${lwjglVersion}", classifier:'natives-macos'
+
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}", classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}", classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:"${lwjglVersion}", classifier:'natives-macos'
+
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:"${lwjglVersion}", classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:"${lwjglVersion}", classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:"${lwjglVersion}", classifier:'natives-macos'
+
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
