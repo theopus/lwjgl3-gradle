@@ -1,12 +1,16 @@
 package com.theopus.core.render;
 
 import com.theopus.core.models.RawModel;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,44 +22,62 @@ public class VaoLoader implements Closeable {
     public static final class Attribute {
 
         public static final int VERTICIES = 0;
-        public static final int INDICIES = 1;
-        public static final int TEXTURE_COORDS = 2;
+        public static final int TEXTURE_COORDS = 1;
     }
 
-    private List<Integer> vaoIds = new ArrayList<>();
-    private List<Integer> vboIds = new ArrayList<>();
+    private List<Integer> vao = new ArrayList<>();
+    private List<Integer> vbo = new ArrayList<>();
 
-    public RawModel loadToModel(float[] pos, int vecSize) {
-        int vaoId = createVao();
-        bindVao(vaoId);
+    public RawModel loadToVAO(float[] positions, int[] indicies) {
+        int vaoID = createVAO();
+        bindVao(vaoID);
+        bindIndicesBuffer(indicies);
 
-        storeArrayBuffer(Attribute.VERTICIES, vecSize, pos);
-
+        writeInVao(Attribute.VERTICIES, 3, positions);
         unbindVao();
-        return new RawModel(vaoId, pos.length / vecSize);
+        return new RawModel(vaoID, indicies.length);
     }
 
-    private void storeArrayBuffer(int pos, int vecSize, float[] data) {
-        int bufferId = createBuffer();
-        bindArrayBuffer(bufferId);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, toFloatBuffer(data), GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(pos, vecSize, GL20.GL_FLOAT_VEC3, false, 0, 0);
-        unbindArrayBuffer();
-    }
+    private void writeInVao(int attributeNumber, int coordinatesSize, float[] data) {
+        int vboID = GL15.glGenBuffers();
+        vbo.add(vboID);
 
-    private FloatBuffer toFloatBuffer(float[] array) {
-        FloatBuffer allocate = FloatBuffer.allocate(array.length);
-        allocate.put(array);
-        allocate.flip();
-        return allocate;
-    }
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 
-    private void bindArrayBuffer(int id) {
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, id);
-    }
+        FloatBuffer buffer = storeDataInFloatBuffer(data);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(attributeNumber, coordinatesSize, GL11.GL_FLOAT, false, 0, 0);
 
-    private void unbindArrayBuffer() {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+    }
+
+    private void bindIndicesBuffer(int[] indices) {
+        int vboID = GL15.glGenBuffers();
+        vbo.add(vboID);
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
+        IntBuffer buffer = storeDataInIntBuffer(indices);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW );
+    }
+
+    private IntBuffer storeDataInIntBuffer(int[] data) {
+        IntBuffer result = BufferUtils.createIntBuffer(data.length);
+        result.put(data);
+        result.flip();
+        return result;
+    }
+
+    private FloatBuffer storeDataInFloatBuffer(float[] data) {
+        FloatBuffer result = BufferUtils.createFloatBuffer(data.length);
+        result.put(data);
+        result.flip();
+        return result;
+    }
+
+    private int createVAO() {
+        int vaoID = GL30.glGenVertexArrays();
+        vao.add(vaoID);
+        return vaoID;
     }
 
     private void bindVao(int id) {
@@ -66,27 +88,13 @@ public class VaoLoader implements Closeable {
         GL30.glBindVertexArray(0);
     }
 
-    private int createBuffer() {
-        int bufferId = GL15.glGenBuffers();
-        vboIds.add(bufferId);
-        return bufferId;
-    }
-
-    private int createVao() {
-        int id = GL30.glGenVertexArrays();
-        vaoIds.add(id);
-        return id;
-    }
-
-    public void close() {
-        unbindVao();
-        for (Integer vaoId : vaoIds) {
-            GL30.glDeleteVertexArrays(vaoId);
+    @Override
+    public void close() throws IOException {
+        for (int vao : vao) {
+            GL30.glDeleteVertexArrays(vao);
         }
-        unbindArrayBuffer();
-        for (Integer vboId : vboIds) {
-            GL15.glDeleteBuffers(vboId);
+        for (int vbo : vbo) {
+            GL15.glDeleteBuffers(vbo);
         }
     }
-
 }

@@ -19,7 +19,7 @@ public class Renderer {
         GL30.glBindVertexArray(rawModel.getVaoId());
         GL20.glEnableVertexAttribArray(0);
 
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, rawModel.getVerticies());
+        GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVerticies(), GL11.GL_UNSIGNED_INT, 0);
         //TEARDOWN
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);

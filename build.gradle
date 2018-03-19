@@ -12,7 +12,7 @@ ext {
             junit  : '4.12',
             mockito: '1.10.19',
             dagger2: '2.15',
-            log4j: '2.7',
+            log4j  : '2.7',
     ]
     plugs = [
             'nla': '0.10',
@@ -34,7 +34,15 @@ sourceSets {
 group 'com.theopus'
 sourceCompatibility = 1.8
 mainClassName = "com.theopus.core.EntryPoint"
-applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+if (Os.isFamily(Os.FAMILY_MAC)) {
+    applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
+    println "*** MAC "
+}
+
+
 
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
