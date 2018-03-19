@@ -1,18 +1,19 @@
-package com.theopus.core.loader; /*******************************************************************************
+package com.theopus.core.loader;
+/**
  * Copyright 2011 See AUTHORS file.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ **/
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,10 +28,13 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/** Loads shared libraries from JAR files. Call {@link SharedLibraryLoader#load() to load the
+/**
+ * Loads shared libraries from JAR files. Call {@link SharedLibraryLoader#load() to load the
  * required LWJGL 3 native shared libraries.
+ *
  * @author mzechner
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ */
 public class SharedLibraryLoader {
     static public boolean isWindows = System.getProperty("os.name").contains("Windows");
     static public boolean isLinux = System.getProperty("os.name").contains("Linux");
@@ -64,7 +68,7 @@ public class SharedLibraryLoader {
     static {
         // Don't extract natives if using JWS.
         try {
-            Method method = Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup", new Class[] {String.class});
+            Method method = Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup", new Class[]{String.class});
             method.invoke(null, "javax.jnlp.PersistenceService");
             load = false;
         } catch (Throwable ex) {
@@ -72,13 +76,17 @@ public class SharedLibraryLoader {
         }
     }
 
-    /** Extracts the LWJGL native libraries from the classpath and sets the "org.lwjgl.librarypath" system property. */
-    static public synchronized void load () {
+    /**
+     * Extracts the LWJGL native libraries from the classpath and sets the "org.lwjgl.librarypath" system property.
+     */
+    static public synchronized void load() {
         load(false);
     }
 
-    /** Extracts the LWJGL native libraries from the classpath and sets the "org.lwjgl.librarypath" system property. */
-    static public synchronized void load (boolean disableOpenAL) {
+    /**
+     * Extracts the LWJGL native libraries from the classpath and sets the "org.lwjgl.librarypath" system property.
+     */
+    static public synchronized void load(boolean disableOpenAL) {
         if (!load) return;
 
         SharedLibraryLoader loader = new SharedLibraryLoader();
@@ -107,17 +115,22 @@ public class SharedLibraryLoader {
 
     private String nativesJar;
 
-    public SharedLibraryLoader () {
+    public SharedLibraryLoader() {
     }
 
-    /** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly.
-     * @param nativesJar */
-    public SharedLibraryLoader (String nativesJar) {
+    /**
+     * Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly.
+     *
+     * @param nativesJar
+     */
+    public SharedLibraryLoader(String nativesJar) {
         this.nativesJar = nativesJar;
     }
 
-    /** Returns a CRC of the remaining bytes in the stream. */
-    public String crc (InputStream input) {
+    /**
+     * Returns a CRC of the remaining bytes in the stream.
+     */
+    public String crc(InputStream input) {
         if (input == null) throw new IllegalArgumentException("input cannot be null.");
         CRC32 crc = new CRC32();
         byte[] buffer = new byte[4096];
@@ -128,7 +141,7 @@ public class SharedLibraryLoader {
                 crc.update(buffer, 0, length);
             }
         } catch (Exception ex) {
-            if(input != null) {
+            if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
@@ -138,17 +151,22 @@ public class SharedLibraryLoader {
         return Long.toString(crc.getValue(), 16);
     }
 
-    /** Maps a platform independent library name to a platform dependent name. */
-    public String mapLibraryName (String libraryName) {
+    /**
+     * Maps a platform independent library name to a platform dependent name.
+     */
+    public String mapLibraryName(String libraryName) {
         if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
         if (isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
         if (isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
         return libraryName;
     }
 
-    /** Loads a shared library for the platform the application is running on.
-     * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
-    public synchronized void load (String libraryName) {
+    /**
+     * Loads a shared library for the platform the application is running on.
+     *
+     * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll).
+     */
+    public synchronized void load(String libraryName) {
         // in case of iOS, things have been linked statically to the executable, bail out.
         if (isIos) return;
 
@@ -167,7 +185,7 @@ public class SharedLibraryLoader {
         loadedLibraries.add(libraryName);
     }
 
-    private InputStream readFile (String path) {
+    private InputStream readFile(String path) {
         if (nativesJar == null) {
             InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + path);
             if (input == null) throw new RuntimeException("Unable to read file for extraction: " + path);
@@ -184,7 +202,7 @@ public class SharedLibraryLoader {
         } catch (IOException ex) {
             throw new RuntimeException("Error reading '" + path + "' in JAR: " + nativesJar, ex);
         } finally {
-            if(file != null) {
+            if (file != null) {
                 try {
                     file.close();
                 } catch (IOException e) {
@@ -193,12 +211,15 @@ public class SharedLibraryLoader {
         }
     }
 
-    /** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
+    /**
+     * Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
      * extraction fails and the file exists at java.library.path, that file is returned.
+     *
      * @param sourcePath The file to extract from the classpath or JAR.
-     * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
-     * @return The extracted file. */
-    public File extractFile (String sourcePath, String dirName) throws IOException {
+     * @param dirName    The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
+     * @return The extracted file.
+     */
+    public File extractFile(String sourcePath, String dirName) throws IOException {
         try {
             String sourceCrc = crc(readFile(sourcePath));
             if (dirName == null) dirName = sourceCrc;
@@ -213,8 +234,10 @@ public class SharedLibraryLoader {
         }
     }
 
-    /** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds. */
-    private File getExtractedFile (String dirName, String fileName) {
+    /**
+     * Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
+     */
+    private File getExtractedFile(String dirName, String fileName) {
         // Temp directory with username in path.
         File idealFile = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
                 + dirName, fileName);
@@ -241,8 +264,10 @@ public class SharedLibraryLoader {
         return idealFile; // Will likely fail, but we did our best.
     }
 
-    /** Returns true if the parent directories of the file can be created and the file can be written. */
-    private boolean canWrite (File file) {
+    /**
+     * Returns true if the parent directories of the file can be created and the file can be written.
+     */
+    private boolean canWrite(File file) {
         File parent = file.getParentFile();
         File testFile;
         if (file.exists()) {
@@ -265,21 +290,21 @@ public class SharedLibraryLoader {
         }
     }
 
-    private boolean canExecute (File file) {
+    private boolean canExecute(File file) {
         try {
             Method canExecute = File.class.getMethod("canExecute");
-            if ((Boolean)canExecute.invoke(file)) return true;
+            if ((Boolean) canExecute.invoke(file)) return true;
 
             Method setExecutable = File.class.getMethod("setExecutable", boolean.class, boolean.class);
             setExecutable.invoke(file, true, false);
 
-            return (Boolean)canExecute.invoke(file);
+            return (Boolean) canExecute.invoke(file);
         } catch (Exception ignored) {
         }
         return false;
     }
 
-    private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {
+    private File extractFile(String sourcePath, String sourceCrc, File extractedFile) throws IOException {
         String extractedCrc = null;
         if (extractedFile.exists()) {
             try {
@@ -310,9 +335,11 @@ public class SharedLibraryLoader {
         return extractedFile;
     }
 
-    /** Extracts the source file and calls System.load. Attemps to extract and load from multiple locations. Throws runtime
-     * exception if all fail. */
-    private void loadFile (String sourcePath) {
+    /**
+     * Extracts the source file and calls System.load. Attemps to extract and load from multiple locations. Throws runtime
+     * exception if all fail.
+     */
+    private void loadFile(String sourcePath) {
         String sourceCrc = crc(readFile(sourcePath));
 
         String fileName = new File(sourcePath).getName();
@@ -348,8 +375,10 @@ public class SharedLibraryLoader {
         throw new RuntimeException(ex);
     }
 
-    /** @return null if the file was extracted and loaded. */
-    private Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
+    /**
+     * @return null if the file was extracted and loaded.
+     */
+    private Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile) {
         try {
             System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
             return null;

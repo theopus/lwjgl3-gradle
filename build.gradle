@@ -2,6 +2,7 @@ plugins {
     id "net.ltgt.apt" version "0.10"
     id 'java'
     id 'application'
+    id 'idea'
 }
 
 ext {
@@ -10,16 +11,30 @@ ext {
             joml   : '1.2.0-SNAPSHOT',
             junit  : '4.12',
             mockito: '1.10.19',
-            dagger2: '2.15'
+            dagger2: '2.15',
+            log4j: '2.7',
     ]
     plugs = [
             'nla': '0.10',
     ]
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java/'
+            srcDir 'build/generated/source/apt/main'
+        }
+        resources {
+            srcDirs "src/main/resources", "src/main/configs"
+        }
+    }
+}
+
 group 'com.theopus'
 sourceCompatibility = 1.8
-mainClassName = "com.theopus.core.Hello"
+mainClassName = "com.theopus.core.EntryPoint"
+applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
 
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -51,6 +66,11 @@ dependencies {
 
     compile "com.google.dagger:dagger:${libs.dagger2}"
     apt "com.google.dagger:dagger-compiler:${libs.dagger2}"
+
+
+    compile "org.apache.logging.log4j:log4j-api:${libs.log4j}"
+    compile "org.apache.logging.log4j:log4j-core:${libs.log4j}"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:${libs.log4j}"
 
     testCompile "org.mockito:mockito-all:${libs.mockito}"
     testCompile "junit:junit:${libs.junit}"
