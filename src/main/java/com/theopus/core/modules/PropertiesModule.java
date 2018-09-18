@@ -25,7 +25,6 @@ public class PropertiesModule {
         return Integer.valueOf(getOrThrow(WINDOW_HEIGHT));
     }
 
-
     @Provides
     @Named(WINDOW_WIDTH)
     public Integer width() {

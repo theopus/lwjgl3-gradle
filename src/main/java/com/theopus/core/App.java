@@ -2,7 +2,8 @@ package com.theopus.core;
 
 import com.theopus.core.models.RawModel;
 import com.theopus.core.render.Renderer;
-import com.theopus.core.render.VaoLoader;
+import com.theopus.core.render.Loader;
+import com.theopus.core.render.RawModelRenderer;
 import com.theopus.core.render.WindowManager;
 
 import java.io.IOException;
@@ -29,9 +30,9 @@ public class App {
                 3,1,2
         };
         windowManager.createWindow();
-        VaoLoader loader = new VaoLoader();
-        Renderer renderer = new Renderer();
-        RawModel rawModel = loader.loadToVAO(vertices, indicies);
+        Loader loader = new Loader();
+        Renderer renderer = new RawModelRenderer();
+        RawModel rawModel = loader.loadRawModel(vertices, indicies);
 
 
 
@@ -39,7 +40,7 @@ public class App {
         while (!windowManager.windowShouldClose()) {
             renderer.prepare();
 
-            renderer.render(rawModel);
+            renderer.renderCycle(rawModel);
             windowManager.update();
             Thread.sleep(100);
         }

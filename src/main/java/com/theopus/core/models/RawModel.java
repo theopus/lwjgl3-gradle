@@ -6,18 +6,18 @@ package com.theopus.core.models;
 public class RawModel {
 
     private int vaoId;
-    private int verticies;
+    private int vertices;
 
-    public RawModel(int vaoId, int verticies) {
+    public RawModel(int vaoId, int vertices) {
         this.vaoId = vaoId;
-        this.verticies = verticies;
+        this.vertices = vertices;
     }
 
     public int getVaoId() {
         return vaoId;
     }
 
-    public int getVerticies() {
-        return verticies;
+    public int getVertices() {
+        return vertices;
     }
 }

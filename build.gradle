@@ -26,7 +26,15 @@ sourceSets {
             srcDir 'build/generated/source/apt/main'
         }
         resources {
-            srcDirs "src/main/resources", "src/main/configs"
+            srcDirs "src/main/resources", "src/main/configs", "src/main/glsl"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+        resources {
+            srcDirs "src/test/resources", "src/test/configs", "src/test/glsl"
         }
     }
 }
@@ -55,6 +63,7 @@ dependencies {
     compile "org.lwjgl:lwjgl-glfw:${libs.lwjgl}"
     compile "org.lwjgl:lwjgl-opengl:${libs.lwjgl}"
     compile "org.lwjgl:lwjgl-stb:${libs.lwjgl}"
+    compile "org.lwjgl:lwjgl-assimp:${libs.lwjgl}"
 
     compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-windows"
     compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-linux"
