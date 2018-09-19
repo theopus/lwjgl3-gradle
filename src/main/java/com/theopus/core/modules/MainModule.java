@@ -7,7 +7,6 @@ import com.theopus.core.render.Renderer;
 import com.theopus.core.render.WindowManager;
 import com.theopus.core.shaders.ShaderFactory;
 import com.theopus.core.shaders.ShaderProgram;
-import com.theopus.core.shaders.StaticShader;
 import dagger.Module;
 import dagger.Provides;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -58,7 +57,6 @@ public class MainModule {
     @Inject
     public App app(WindowManager wm,
                    Renderer renderer) {
-        System.out.println("Kek");
-        return new App(wm);
+        return new App(wm, renderer);
     }
 }

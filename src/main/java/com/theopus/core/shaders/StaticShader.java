@@ -10,11 +10,11 @@ public class StaticShader extends ShaderProgram {
 
     @Override
     protected void getAllUniformLocations() {
-        super.bindAttribute(Attribute.VERTICES.getPosition(),Attribute.VERTICES.getPlaceholder());
+//        super.bindAttribute(Attribute.VERTICES.getPosition(),Attribute.VERTICES.getPlaceholder());
     }
 
     @Override
     protected void bindAllAttributes() {
-        super.bindAttribute(Attribute.VERTICES.getPosition(),Attribute.VERTICES.getPlaceholder());
+        super.bindAttribute(0,Attribute.VERTICES.getPlaceholder());
     }
 }

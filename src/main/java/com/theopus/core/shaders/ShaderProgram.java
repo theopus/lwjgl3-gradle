@@ -19,28 +19,35 @@ public abstract class ShaderProgram implements Closeable {
 
     public static Logger LOGGER = LoggerFactory.getLogger(ShaderProgram.class);
 
-    public ShaderProgram(int programID, int vertexShaderID) {
-        this.programID = programID;
+    public ShaderProgram(int vertexShaderID, int fragmentShaderID) {
         this.vertexShaderID = vertexShaderID;
+        this.fragmentShaderID = fragmentShaderID;
+        this.programID = GL20.glCreateProgram();
+        GL20.glAttachShader(programID, vertexShaderID);
+        GL20.glAttachShader(programID, fragmentShaderID);
+        GL20.glLinkProgram(programID);
+        GL20.glValidateProgram(programID);
+        bindAllAttributes();
+        getAllUniformLocations();
     }
 
     protected abstract void getAllUniformLocations();
 
-    protected int getUniformLocation(String uniformName){
-        return GL20.glGetUniformLocation(programID,uniformName);
+    protected int getUniformLocation(String uniformName) {
+        return GL20.glGetUniformLocation(programID, uniformName);
     }
 
     protected abstract void bindAllAttributes();
 
-    protected void bindAttribute(int attribute, String variableName){
+    protected void bindAttribute(int attribute, String variableName) {
         GL20.glBindAttribLocation(programID, attribute, variableName);
     }
 
-    public void start(){
+    public void start() {
         GL20.glUseProgram(programID);
     }
 
-    public void stop(){
+    public void stop() {
         GL20.glUseProgram(0);
     }
 
@@ -63,6 +70,8 @@ public abstract class ShaderProgram implements Closeable {
                 shaderSource.append(line).append('\n');
             }
         }
+
+        LOGGER.info("SHADER = \n{}", shaderSource.toString());
         int shaderID = GL20.glCreateShader(type.binding());
         GL20.glShaderSource(shaderID, shaderSource);
         GL20.glCompileShader(shaderID);
@@ -76,7 +85,7 @@ public abstract class ShaderProgram implements Closeable {
 
     public enum Type {
         VERTEX(GL20.GL_VERTEX_SHADER),
-        FRAGMENT(GL20.GL_VERTEX_SHADER),
+        FRAGMENT(GL20.GL_FRAGMENT_SHADER),
         ;
         private int glBinding;
 

@@ -2,7 +2,6 @@ package com.theopus.core.render;
 
 import com.theopus.core.models.RawModel;
 import com.theopus.core.shaders.ShaderProgram;
-import com.theopus.core.shaders.StaticShader;
 
 public class RawModelStaticShaderRenderer extends RawModelRenderer {
 
@@ -14,8 +13,8 @@ public class RawModelStaticShaderRenderer extends RawModelRenderer {
 
     @Override
     public void preRender(RawModel rawModel) {
-        super.preRender(rawModel);
         shader.start();
+        super.preRender(rawModel);
     }
 
     @Override

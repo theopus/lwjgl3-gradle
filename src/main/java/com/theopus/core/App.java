@@ -10,10 +10,12 @@ import java.io.IOException;
 
 public class App {
 
-    private WindowManager windowManager;
+    private final WindowManager windowManager;
+    private final Renderer renderer;
 
-    public App(WindowManager windowManager) {
+    public App(WindowManager windowManager, Renderer renderer) {
         this.windowManager = windowManager;
+        this.renderer = renderer;
     }
 
     public void run() throws InterruptedException, IOException {
@@ -30,17 +32,18 @@ public class App {
                 3,1,2
         };
         Loader loader = new Loader();
-        Renderer renderer = new RawModelRenderer();
+
         RawModel rawModel = loader.loadRawModel(vertices, indicies);
 
 
 
 
         while (!windowManager.windowShouldClose()) {
-            renderer.prepare();
 
+            renderer.prepare();
             renderer.renderCycle(rawModel);
             windowManager.update();
+
             Thread.sleep(100);
         }
 

@@ -1,6 +1,8 @@
 package com.theopus.core.render;
 
-public interface Renderer<T> {
+import com.theopus.core.models.RawModel;
+
+public interface Renderer<T extends RawModel> {
     void prepare();
 
     void render(T t);
