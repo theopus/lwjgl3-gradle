@@ -29,7 +29,6 @@ public class App {
                 0,1,3,
                 3,1,2
         };
-        windowManager.createWindow();
         Loader loader = new Loader();
         Renderer renderer = new RawModelRenderer();
         RawModel rawModel = loader.loadRawModel(vertices, indicies);

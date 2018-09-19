@@ -81,6 +81,8 @@ public class WindowManager implements Closeable {
         if (showWindow) {
             glfwShowWindow(window);
         }
+
+        LOGGER.info("Finished init of GLFW.");
     }
 
     public void update(){

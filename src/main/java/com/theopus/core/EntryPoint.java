@@ -15,8 +15,10 @@ public class EntryPoint {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         SharedLibraryLoader.load();
-        App app = DaggerAppComponent.builder().propertiesModule(new PropertiesModule("config.properties"))
-                .build().buildApp();
+        App app = DaggerAppComponent.builder()
+                .propertiesModule(new PropertiesModule("config.properties"))
+                .build()
+                .buildApp();
         app.run();
     }
 }

@@ -48,7 +48,8 @@ public class MainModule {
     @Singleton
     @Provides
     @Inject
-    public ShaderProgram staticShader(){
+    public ShaderProgram staticShader(WindowManager windowManager){
+        windowManager.createWindow();
         return ShaderFactory.createStaticShader("one.vert", "one.frag");
     }
 
@@ -57,6 +58,7 @@ public class MainModule {
     @Inject
     public App app(WindowManager wm,
                    Renderer renderer) {
+        System.out.println("Kek");
         return new App(wm);
     }
 }

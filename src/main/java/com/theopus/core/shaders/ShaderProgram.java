@@ -63,7 +63,6 @@ public abstract class ShaderProgram implements Closeable {
                 shaderSource.append(line).append('\n');
             }
         }
-
         int shaderID = GL20.glCreateShader(type.binding());
         GL20.glShaderSource(shaderID, shaderSource);
         GL20.glCompileShader(shaderID);
