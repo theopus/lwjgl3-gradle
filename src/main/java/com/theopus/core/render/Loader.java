@@ -58,9 +58,10 @@ public class Loader implements Closeable {
             throw new RuntimeException(e);
         }
 
-        int[] data = LoaderUtils.argbToRgba(pixels, width,height);
+        int[] data = LoaderUtils.argbToRgba(pixels, width, height);
 
         int textureId = GL11.glGenTextures();
+        textures.add(textureId);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -70,6 +71,7 @@ public class Loader implements Closeable {
             IntBuffer buffer = stack.mallocInt(data.length).put(data);
             buffer.flip();
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+            buffer.clear();
         }
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         return new Texture(textureId, width, height);
@@ -85,8 +87,9 @@ public class Loader implements Closeable {
             FloatBuffer buffer = stack.mallocFloat(data.length).put(data);
             buffer.flip();
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+            buffer.clear();
         }
-        
+
         /*
          stride - offset between values in array,
          normalized - normalize floating point numbers
@@ -110,6 +113,7 @@ public class Loader implements Closeable {
             IntBuffer buffer = stack.mallocInt(indices.length).put(indices);
             buffer.flip();
             GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+            buffer.clear();
         }
     }
 
