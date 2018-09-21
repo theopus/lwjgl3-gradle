@@ -1,10 +1,10 @@
 package com.theopus.core.render;
 
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,8 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -47,11 +49,13 @@ public class WindowManager implements Closeable {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        glfwWindowHint(GLFW_RESIZABLE,GLFW_TRUE);
-        if (showWindow) {
-        } else {
-            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        }
+        glfwDefaultWindowHints(); // optional, the current window hints are already the default
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // the window will stay hidden after creation
+        glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         window = glfwCreateWindow(width, height,"Kurs",NULL,NULL);
 
         if (listener != null) {
@@ -82,6 +86,7 @@ public class WindowManager implements Closeable {
             glfwShowWindow(window);
         }
 
+        GL11.glClearColor(1, 0, 0, 1);
         LOGGER.info("Finished init of GLFW.");
     }
 
@@ -89,6 +94,10 @@ public class WindowManager implements Closeable {
         glfwPollEvents();
         glfwSwapInterval(1);
         glfwSwapBuffers(window);
+    }
+
+    public void setClearColor(float r, float g, float b, float a){
+        GL11.glClearColor(r, g, b, a);
     }
 
     public void close(){

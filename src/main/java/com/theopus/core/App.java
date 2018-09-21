@@ -1,9 +1,9 @@
 package com.theopus.core;
 
-import com.theopus.core.models.RawModel;
+import com.theopus.core.objects.Mesh;
+import com.theopus.core.render.MemoryContext;
 import com.theopus.core.render.Renderer;
-import com.theopus.core.render.Loader;
-import com.theopus.core.render.RawModelRenderer;
+import com.theopus.core.objects.MeshLoader;
 import com.theopus.core.render.WindowManager;
 
 import java.io.IOException;
@@ -12,13 +12,15 @@ public class App {
 
     private final WindowManager windowManager;
     private final Renderer renderer;
+    private MemoryContext context;
 
-    public App(WindowManager windowManager, Renderer renderer) {
+    public App(WindowManager windowManager, Renderer renderer, MemoryContext context) {
         this.windowManager = windowManager;
         this.renderer = renderer;
+        this.context = context;
     }
 
-    public void run() throws InterruptedException, IOException {
+    public void run() throws Exception {
 
         float[] vertices = {
                 -0.5f, 0.5f, 0f,
@@ -31,23 +33,19 @@ public class App {
                 0,1,3,
                 3,1,2
         };
-        Loader loader = new Loader();
+        MeshLoader meshLoader = new MeshLoader(context);
 
-        RawModel rawModel = loader.loadRawModel(vertices, indicies);
-
-
+        Mesh mesh = meshLoader.loadSimpleMesh(vertices, indicies);
 
 
         while (!windowManager.windowShouldClose()) {
-
-            renderer.prepare();
-            renderer.renderCycle(rawModel);
+            renderer.renderCycle(mesh);
             windowManager.update();
 
             Thread.sleep(100);
         }
 
         windowManager.close();
-        loader.close();
+        context.close();
     }
 }

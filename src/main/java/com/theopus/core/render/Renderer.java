@@ -1,19 +1,30 @@
 package com.theopus.core.render;
 
-import com.theopus.core.models.RawModel;
+import com.theopus.core.shaders.ShaderProgram;
 
-public interface Renderer<T extends RawModel> {
-    void prepare();
+public abstract class Renderer<T extends Bindable, S extends ShaderProgram> {
 
-    void render(T t);
+    private S shader;
 
-    void preRender(T t);
+    public Renderer(S shader) {
+        this.shader = shader;
+    }
 
-    void postRender();
+    public abstract void render(T t);
 
-    default void renderCycle(T t){
+    public void preRender(T t){
+        shader.bind();
+        t.bind();
+    }
+
+    public void postRender(T t) {
+        shader.unbind();
+        t.unbind();
+    }
+
+    public void renderCycle(T t){
         preRender(t);
         render(t);
-        postRender();
+        postRender(t);
     }
 }

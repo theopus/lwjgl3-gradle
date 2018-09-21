@@ -1,10 +1,7 @@
 package com.theopus.core.modules;
 
 import com.theopus.core.App;
-import com.theopus.core.render.KeyListener;
-import com.theopus.core.render.RawModelStaticShaderRenderer;
-import com.theopus.core.render.Renderer;
-import com.theopus.core.render.WindowManager;
+import com.theopus.core.render.*;
 import com.theopus.core.shaders.ShaderFactory;
 import com.theopus.core.shaders.ShaderProgram;
 import dagger.Module;
@@ -52,11 +49,19 @@ public class MainModule {
         return ShaderFactory.createStaticShader("one.vert", "one.frag");
     }
 
+    @Singleton
+    @Provides
+    @Inject
+    public MemoryContext ctx(){
+        return new MemoryContext();
+    }
+
     @Provides
     @Singleton
     @Inject
     public App app(WindowManager wm,
-                   Renderer renderer) {
-        return new App(wm, renderer);
+                   Renderer renderer,
+                   MemoryContext ctx) {
+        return new App(wm, renderer, ctx);
     }
 }

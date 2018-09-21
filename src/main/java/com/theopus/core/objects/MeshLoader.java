@@ -1,7 +1,7 @@
-package com.theopus.core.render;
+package com.theopus.core.objects;
 
-import com.theopus.core.models.RawModel;
-import com.theopus.core.models.Texture;
+import com.theopus.core.render.Attribute;
+import com.theopus.core.render.MemoryContext;
 import com.theopus.core.utils.LoaderUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -13,34 +13,57 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
+
 /**
  * Created by Oleksandr_Tkachov on 18.03.2018.
  */
-public class Loader implements Closeable {
+public class MeshLoader {
 
-    public static Logger LOGGER = LoggerFactory.getLogger(Loader.class);
+    public static Logger LOGGER = LoggerFactory.getLogger(MeshLoader.class);
 
-    private List<Integer> vao = new ArrayList<>();
-    private List<Integer> vbo = new ArrayList<>();
-    private List<Integer> textures = new ArrayList<>();
+    private final MemoryContext ctx;
 
-    public RawModel loadRawModel(float[] positions, int[] indices) {
+    public MeshLoader(MemoryContext ctx) {
+        this.ctx = ctx;
+    }
+
+    public Mesh loadSimpleMesh(float[] positions, int[] indices) {
         int vaoID = createVAO();
         bindVao(vaoID);
-        bindIndicesBuffer(indices);
+        int indicesVboId = bindIndicesBuffer(indices);
 
-        writeInVao(Attribute.VERTICES, 3, positions);
+        int verticesVboId = writeInVao(Attribute.VERTICES, 3, positions);
 
         unbindVao();
         unbindIndicesBuffer();
-        return new RawModel(vaoID, indices.length);
+        Mesh mesh = new Mesh(vaoID, verticesVboId, indices.length, indicesVboId, 0);
+        ctx.put(mesh);
+        return mesh;
+    }
+
+    public TexturedMesh loadTexturedMesh(float[] positions, int[] indices, int[] textureCoords, String textureFile){
+        int vaoID = createVAO();
+        bindVao(vaoID);
+        int indicesVboId = bindIndicesBuffer(indices);
+
+        int verticesVboId = writeInVao(Attribute.VERTICES, 3, positions);
+        int texturesVboId = writeInVao(Attribute.TEXTURE_COORDS, 3, positions);
+
+        unbindVao();
+        unbindIndicesBuffer();
+
+        Texture texture = loadTexture(textureFile);
+
+        TexturedMesh texturedMesh = new TexturedMesh(vaoID,
+                verticesVboId, indices.length,
+                indicesVboId, 0,
+                texturesVboId, texture);
+        ctx.put(texturedMesh);
+        return texturedMesh;
     }
 
     private Texture loadTexture(String path) {
@@ -61,7 +84,6 @@ public class Loader implements Closeable {
         int[] data = LoaderUtils.argbToRgba(pixels, width, height);
 
         int textureId = GL11.glGenTextures();
-        textures.add(textureId);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -77,9 +99,8 @@ public class Loader implements Closeable {
         return new Texture(textureId, width, height);
     }
 
-    private void writeInVao(Attribute attributeNumber, int coordinatesSize, float[] data) {
+    private int writeInVao(Attribute attributeNumber, int coordinatesSize, float[] data) {
         int vboID = GL15.glGenBuffers();
-        vbo.add(vboID);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 
@@ -97,15 +118,14 @@ public class Loader implements Closeable {
          */
         GL20.glVertexAttribPointer(attributeNumber.getPosition(), coordinatesSize, GL11.GL_FLOAT, false, 0, 0);
 
-
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
+        return vboID;
     }
 
     //This is same VBO as top one, but GL_ELEMENT_ARRAY_BUFFER indicates the buffer contains indices of each element in the others VBO
-    private void bindIndicesBuffer(int[] indices) {
+    //VAO contains specific slot for this kind of element buffer object, so it is actually EBO
+    private int bindIndicesBuffer(int[] indices) {
         int vboID = GL15.glGenBuffers();
-        vbo.add(vboID);
 
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
 
@@ -115,6 +135,8 @@ public class Loader implements Closeable {
             GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
             buffer.clear();
         }
+
+        return vboID;
     }
 
     private void unbindIndicesBuffer() {
@@ -123,7 +145,6 @@ public class Loader implements Closeable {
 
     private int createVAO() {
         int vaoID = GL30.glGenVertexArrays();
-        vao.add(vaoID);
         return vaoID;
     }
 
@@ -135,16 +156,4 @@ public class Loader implements Closeable {
         GL30.glBindVertexArray(0);
     }
 
-    @Override
-    public void close() throws IOException {
-        for (int vao : vao) {
-            GL30.glDeleteVertexArrays(vao);
-        }
-        for (int vbo : vbo) {
-            GL15.glDeleteBuffers(vbo);
-        }
-        for (int texture: textures){
-            GL11.glDeleteTextures(texture);
-        }
-    }
 }

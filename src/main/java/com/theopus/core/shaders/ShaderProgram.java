@@ -1,6 +1,8 @@
 package com.theopus.core.shaders;
 
 import com.theopus.core.exceptions.OpenGLEngineException;
+import com.theopus.core.objects.Resource;
+import com.theopus.core.render.Bindable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.slf4j.Logger;
@@ -11,7 +13,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public abstract class ShaderProgram implements Closeable {
+public abstract class ShaderProgram implements Resource, Bindable {
 
     private int programID;
     private int vertexShaderID;
@@ -43,18 +45,16 @@ public abstract class ShaderProgram implements Closeable {
         GL20.glBindAttribLocation(programID, attribute, variableName);
     }
 
-    public void start() {
+    public void bind() {
         GL20.glUseProgram(programID);
     }
 
-    public void stop() {
+    public void unbind() {
         GL20.glUseProgram(0);
     }
 
     @Override
-    public void close() {
-        stop();
-        GL20.glDetachShader(programID, vertexShaderID);
+    public void cleanup() {
         GL20.glDetachShader(programID, fragmentShaderID);
         GL20.glDeleteShader(vertexShaderID);
         GL20.glDeleteShader(fragmentShaderID);

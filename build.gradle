@@ -7,12 +7,13 @@ plugins {
 
 ext {
     libs = [
-            lwjgl  : '3.1.6',
-            joml   : '1.2.0-SNAPSHOT',
-            junit  : '4.12',
-            mockito: '1.10.19',
-            dagger2: '2.15',
-            log4j  : '2.7',
+            lwjgl      : '3.1.6',
+            joml       : '1.2.0-SNAPSHOT',
+            junit      : '4.12',
+            mockito    : '1.10.19',
+            dagger2    : '2.15',
+            log4j      : '2.7',
+            pngdecoder : '1.0',
     ]
     plugs = [
             'nla': '0.10',
@@ -59,11 +60,14 @@ repositories {
 
 dependencies {
     compile "org.joml:joml-camera:${libs.joml}"
+    compile "org.l33tlabs.twl:pngdecoder:${libs.pngdecoder}"
+
     compile "org.lwjgl:lwjgl:${libs.lwjgl}"
     compile "org.lwjgl:lwjgl-glfw:${libs.lwjgl}"
     compile "org.lwjgl:lwjgl-opengl:${libs.lwjgl}"
     compile "org.lwjgl:lwjgl-stb:${libs.lwjgl}"
     compile "org.lwjgl:lwjgl-assimp:${libs.lwjgl}"
+    compile "org.lwjgl:lwjgl-nuklear:${libs.lwjgl}"
 
     compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-windows"
     compile "org.lwjgl:lwjgl:${libs.lwjgl}:natives-linux"

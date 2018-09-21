@@ -1,17 +1,12 @@
-package com.theopus.core.models;
+package com.theopus.core.objects;
 
-import com.theopus.core.utils.LoaderUtils;
+import com.theopus.core.render.Bindable;
+import org.lwjgl.opengl.GL11;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 
-public class Texture {
+public class Texture implements Bindable, Resource {
 
     private int textureId;
     private int width;
@@ -21,14 +16,6 @@ public class Texture {
         this.textureId = textureId;
         this.width = width;
         this.height = height;
-    }
-
-    public void bind() {
-        glBindTexture(GL_TEXTURE_2D, textureId);
-    }
-
-    public void unbind() {
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public int getWidth() {
@@ -43,4 +30,18 @@ public class Texture {
         return textureId;
     }
 
+    @Override
+    public void cleanup() {
+        GL11.glDeleteTextures(textureId);
+    }
+
+    @Override
+    public void bind() {
+        glBindTexture(GL_TEXTURE_2D, textureId);
+    }
+
+    @Override
+    public void unbind() {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 }

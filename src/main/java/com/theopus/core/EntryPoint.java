@@ -13,7 +13,7 @@ public class EntryPoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class);
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws Exception {
         SharedLibraryLoader.load();
         App app = DaggerAppComponent.builder()
                 .propertiesModule(new PropertiesModule("config.properties"))
