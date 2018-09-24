@@ -1,58 +1,81 @@
 package com.theopus.core.modules;
 
 import com.theopus.core.App;
-import com.theopus.core.render.*;
-import com.theopus.core.shaders.ShaderFactory;
-import com.theopus.core.shaders.ShaderProgram;
+import com.theopus.core.base.render.Renderer;
+import com.theopus.core.memory.MemoryContext;
+import com.theopus.core.mesh.MeshRenderer;
+import com.theopus.core.modules.configs.PerspectiveConfig;
+import com.theopus.core.modules.configs.WindowConfig;
+import com.theopus.core.base.objects.Camera;
+import com.theopus.core.base.objects.Light;
+import com.theopus.core.base.ShaderFactory;
+import com.theopus.core.base.StaticShader;
+import com.theopus.core.utils.Maths;
+import com.theopus.core.window.KeyListener;
+import com.theopus.core.window.WindowManager;
 import dagger.Module;
 import dagger.Provides;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
-
-import static com.theopus.core.modules.PropertiesModule.WINDOW_HEIGHT;
-import static com.theopus.core.modules.PropertiesModule.WINDOW_WIDTH;
 
 @Module
 public class MainModule {
 
-
     @Singleton
     @Provides
-    public GLFWKeyCallbackI listener(){
+    public KeyListener listener() {
         return new KeyListener();
     }
 
     @Singleton
     @Provides
-    @Inject
-    public WindowManager windowManager(@Named(WINDOW_WIDTH) Integer width,
-                                       @Named(WINDOW_HEIGHT) Integer height,
-                                       GLFWKeyCallbackI listener){
-        return new WindowManager(width, height, listener);
+    public Camera camera(KeyListener listener){
+        Camera camera = new Camera(listener);
+        return camera;
     }
 
     @Singleton
     @Provides
     @Inject
-    public Renderer renderer(ShaderProgram shaderProgram){
-        return new RawModelStaticShaderRenderer(shaderProgram);
+    public WindowManager windowManager(WindowConfig config,
+                                       KeyListener listener) {
+        return new WindowManager(config, listener);
     }
 
     @Singleton
     @Provides
     @Inject
-    public ShaderProgram staticShader(WindowManager windowManager){
+    public Renderer renderer(StaticShader shaderProgram, Matrix4f mt, Camera camera) {
+        Light light = new Light(new Vector3f(0,0,-20), new Vector3f(1,1,1));
+        return new MeshRenderer(shaderProgram, mt, camera, light);
+    }
+
+    @Singleton
+    @Provides
+    @Inject
+    public Matrix4f projectionMatrix(WindowManager windowManager, PerspectiveConfig pc) {
+        Matrix4f projMatrix = Maths.createProjectionMatrix(pc.getFov(), pc.getNear(), pc.getFar(), windowManager.getWidth(), windowManager.getHeight());
+        return projMatrix;
+    }
+
+
+    @Singleton
+    @Provides
+    @Inject
+    public StaticShader staticShader(WindowManager windowManager, MemoryContext ctx) {
         windowManager.createWindow();
-        return ShaderFactory.createStaticShader("one.vert", "one.frag");
+        StaticShader staticShader = ShaderFactory.createStaticShader("static.vert", "static.frag");
+        ctx.put(staticShader);
+        return staticShader;
     }
 
     @Singleton
     @Provides
     @Inject
-    public MemoryContext ctx(){
+    public MemoryContext ctx() {
         return new MemoryContext();
     }
 
@@ -61,7 +84,8 @@ public class MainModule {
     @Inject
     public App app(WindowManager wm,
                    Renderer renderer,
-                   MemoryContext ctx) {
-        return new App(wm, renderer, ctx);
+                   MemoryContext ctx,
+                   Camera camera) {
+        return new App(wm, renderer, ctx, camera);
     }
 }

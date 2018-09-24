@@ -1,9 +1,11 @@
 package com.theopus.core.modules;
 
+import com.theopus.core.modules.configs.PerspectiveConfig;
+import com.theopus.core.modules.configs.WindowConfig;
 import dagger.Module;
 import dagger.Provides;
+import org.joml.Vector4f;
 
-import javax.inject.Named;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -11,25 +13,37 @@ import java.util.*;
 @Module
 public class PropertiesModule {
 
-    public static final String WINDOW_WIDTH = "window.width";
-    public static final String WINDOW_HEIGHT = "window.height";
     private final Map<String, String> props;
 
     public PropertiesModule(String path) {
         this.props = loadProperties(path);
     }
 
+
     @Provides
-    @Named(WINDOW_HEIGHT)
-    public Integer height() {
-        return Integer.valueOf(getOrThrow(WINDOW_HEIGHT));
+    public WindowConfig wconfig() {
+        return new WindowConfig(
+                Integer.valueOf(getOrThrow("window.width")),
+                Integer.valueOf(getOrThrow("window.height")),
+                new Vector4f(
+                        Float.valueOf(getOrThrow("window.cc.r")),
+                        Float.valueOf(getOrThrow("window.cc.g")),
+                        Float.valueOf(getOrThrow("window.cc.b")),
+                        Float.valueOf(getOrThrow("window.cc.a"))
+                )
+
+        );
     }
 
     @Provides
-    @Named(WINDOW_WIDTH)
-    public Integer width() {
-        return Integer.valueOf(getOrThrow(WINDOW_WIDTH));
+    public PerspectiveConfig pconfig() {
+        return new PerspectiveConfig(
+                Float.valueOf(getOrThrow("perspective.fov")),
+                Float.valueOf(getOrThrow("perspective.near")),
+                Float.valueOf(getOrThrow("perspective.far"))
+        );
     }
+
 
     private String getOrThrow(String key) {
         String value = props.get(key);

@@ -51,6 +51,8 @@ if (Os.isFamily(Os.FAMILY_MAC)) {
     println "*** MAC "
 }
 
+applicationDefaultJvmArgs += ["-Xss4m", "-Dorg.lwjgl.system.stackSize=512"]
+
 
 
 repositories {

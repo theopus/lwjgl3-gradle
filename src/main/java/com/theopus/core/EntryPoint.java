@@ -1,12 +1,10 @@
 package com.theopus.core;
 
-import com.theopus.core.loader.SharedLibraryLoader;
+import com.theopus.core.utils.SharedLibraryLoader;
 import com.theopus.core.modules.DaggerAppComponent;
 import com.theopus.core.modules.PropertiesModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 
 public class EntryPoint {
