@@ -1,19 +1,18 @@
-package com.theopus.core.mesh;
+package com.theopus.core.model;
 
+import com.theopus.core.base.objects.*;
 import com.theopus.core.base.render.Renderer;
 import com.theopus.core.base.StaticShader;
-import com.theopus.core.base.objects.Camera;
-import com.theopus.core.base.objects.Light;
-import com.theopus.core.render.Attribute;
+import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-public class MeshRenderer implements Renderer<Mesh> {
+public class ModelRenderer implements Renderer<TexturedModel, ModelEntity> {
     private final Camera camera;
     private final Light light;
     private final StaticShader shader;
 
-    public MeshRenderer(StaticShader shader, Matrix4f pjMtx, Camera camera, Light light) {
+    public ModelRenderer(StaticShader shader, Matrix4f pjMtx, Camera camera, Light light) {
         this.camera = camera;
         this.shader = shader;
         this.light = light;
@@ -24,15 +23,15 @@ public class MeshRenderer implements Renderer<Mesh> {
     }
 
     @Override
-    public MeshRenderer render(Mesh mesh) {
-        shader.loadTransformationMatrix(mesh.transformationMatrix());
+    public ModelRenderer render(ModelEntity modelEntity) {
+        shader.loadTransformationMatrix(modelEntity.transformationMatrix());
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getMeshVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        GL11.glDrawElements(GL11.GL_TRIANGLES, modelEntity.gettModel().getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         return this;
     }
 
     @Override
-    public MeshRenderer preRender(Mesh mesh) {
+    public ModelRenderer preRender(TexturedModel model) {
         // gl stuff
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -40,24 +39,24 @@ public class MeshRenderer implements Renderer<Mesh> {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         // prep
-        bindVao(mesh.getMeshVao());
+        bindVao(model);
         bindVbo(Attribute.VERTICES);
         bindVbo(Attribute.TEXTURE_COORDS);
         bindVbo(Attribute.NORMALS);
-        bindTexture(mesh.getMeshVao().getTexture());
+        bindTexture(model.getTexture());
 
         // shader
         shader.bind();
         shader.loadViewMatrix(camera.viewMatrix());
         shader.loadLightPosition(light.getPosition());
         shader.loadLightColor(light.getColor());
-        shader.loadReflectivity(mesh.getMeshVao().getTexture().getReflictivity());
-        shader.loadShineDamper(mesh.getMeshVao().getTexture().getShineDumper());
+        shader.loadReflectivity(model.getTexture().getReflictivity());
+        shader.loadShineDamper(model.getTexture().getShineDumper());
         return this;
     }
 
     @Override
-    public MeshRenderer postRender(Mesh mesh) {
+    public ModelRenderer postRender(TexturedModel model) {
         // unbind
         unbindVao();
         unbindVbo(Attribute.VERTICES);

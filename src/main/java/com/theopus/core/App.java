@@ -1,21 +1,15 @@
 package com.theopus.core;
 
 import com.theopus.core.base.objects.Camera;
+import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.render.ButchRenderer;
 import com.theopus.core.base.render.Renderer;
 import com.theopus.core.memory.MemoryContext;
-import com.theopus.core.mesh.Mesh;
-import com.theopus.core.mesh.MeshLoader;
-import com.theopus.core.mesh.MeshVao;
+import com.theopus.core.model.ModelEntity;
+import com.theopus.core.base.load.TexturedModelLoader;
 import com.theopus.core.utils.ObjParser;
-import com.theopus.core.utils.Objects;
 import com.theopus.core.window.WindowManager;
 import org.joml.Vector3f;
-
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class App {
 
@@ -33,11 +27,11 @@ public class App {
 
     public void run() throws Exception {
         windowManager.showWindow();
-        MeshLoader meshLoader = new MeshLoader(context);
+        TexturedModelLoader texturedModelLoader = new TexturedModelLoader(context);
 
 
         ObjParser.Result parse = ObjParser.parse("dragon.obj");
-        MeshVao dragonVao = meshLoader.loadModelMesh(
+        TexturedModel dragonVao = texturedModelLoader.loadModelMesh(
                 parse.getPosArr(),
                 parse.getIndicesArr(),
                 parse.getTextCoordArr(),
@@ -49,7 +43,7 @@ public class App {
 
 //
 //        parse = ObjParser.parse("stall.obj");
-//        MeshVao stallVao = meshLoader.loadModelMesh(
+//        MeshVao stallVao = texturedModelLoader.loadModelMesh(
 //                parse.getPosArr(),
 //                parse.getIndicesArr(),
 //                parse.getTextCoordArr(),
@@ -57,13 +51,13 @@ public class App {
 //                "whiteIm.png");
 
 //        ThreadLocalRandom rand = ThreadLocalRandom.current();
-//        MeshVao cubeVao = Objects.geCube(meshLoader);
+//        MeshVao cubeVao = Objects.geCube(texturedModelLoader);
 //        cubeVao.setTexture(dragonVao.getTexture());
 //        float min = -700f;
 //        float max = 700;
 //
-//        List<Mesh> collect = IntStream.range(0, 5_000).mapToObj(value -> {
-//            Mesh m = new Mesh(stallVao);
+//        List<ModelEntity> collect = IntStream.range(0, 5_000).mapToObj(value -> {
+//            ModelEntity m = new ModelEntity(stallVao);
 //            m.setScale(rand.nextFloat());
 //            m.setPosition(new Vector3f(
 //                    (float) ((Math.random()) * (max - min) + min),
@@ -75,12 +69,11 @@ public class App {
 //            return m;
 //        }).collect(Collectors.toList());
 
-        Mesh dragonEntity = new Mesh(dragonVao);
+        ModelEntity dragonEntity = new ModelEntity(dragonVao);
         dragonEntity.setScale(0.75f);
         dragonEntity.setPosition(new Vector3f(0, 0, -25f));
 
-
-        ButchRenderer<Mesh> butchRenderer = new ButchRenderer<Mesh>(renderer);
+        ButchRenderer<TexturedModel, ModelEntity> butchRenderer = new ButchRenderer<TexturedModel, ModelEntity>(renderer);
         butchRenderer.put(dragonVao, dragonEntity);
 
         while (!windowManager.windowShouldClose()) {

@@ -1,20 +1,20 @@
 package com.theopus.core.base.render;
 
+import com.theopus.core.base.objects.Entity;
+import com.theopus.core.base.objects.Model;
 import com.theopus.core.base.objects.Texture;
-import com.theopus.core.mesh.MeshVao;
-import com.theopus.core.render.Attribute;
 import org.lwjgl.opengl.*;
 
-public interface Renderer<T> {
+public interface Renderer<M extends Model, E extends Entity> {
 
-    Renderer<T> render(T t);
+    Renderer<M, E> render(E e);
 
-    Renderer<T> preRender(T t);
+    Renderer<M, E> preRender(M t);
 
-    Renderer<T> postRender(T t);
+    Renderer<M, E> postRender(M t);
 
-    default void bindVao(MeshVao meshVao){
-        GL30.glBindVertexArray(meshVao.getVaoId());
+    default void bindVao(Model meshVao){
+        GL30.glBindVertexArray(meshVao.getVao().getVaoId());
     }
 
     default void unbindVao(){
@@ -39,7 +39,7 @@ public interface Renderer<T> {
     }
 
 
-//    default Renderer<T> fullrender(T t){
+//    default Renderer<E> fullrender(E t){
 //        return preRender(t)
 //                .render(t)
 //                .postRender(t);

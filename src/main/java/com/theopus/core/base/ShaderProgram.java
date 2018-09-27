@@ -2,8 +2,7 @@ package com.theopus.core.base;
 
 import com.theopus.core.base.exceptions.OpenGLEngineException;
 import com.theopus.core.memory.Resource;
-import com.theopus.core.render.Attribute;
-import com.theopus.core.render.Bindable;
+import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -17,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
-public abstract class ShaderProgram implements Resource, Bindable {
+public abstract class ShaderProgram implements Resource {
 
     private final int programID;
     private final int vertexShaderID;

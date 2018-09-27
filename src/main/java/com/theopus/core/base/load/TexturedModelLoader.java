@@ -1,8 +1,9 @@
-package com.theopus.core.mesh;
+package com.theopus.core.base.load;
 
-import com.theopus.core.base.Loader;
 import com.theopus.core.base.objects.Texture;
-import com.theopus.core.render.Attribute;
+import com.theopus.core.base.objects.TexturedModel;
+import com.theopus.core.base.objects.TexturedVao;
+import com.theopus.core.base.render.Attribute;
 import com.theopus.core.memory.MemoryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,15 +11,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Oleksandr_Tkachov on 18.03.2018.
  */
-public class MeshLoader extends Loader {
+public class TexturedModelLoader extends Loader {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(MeshLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TexturedModelLoader.class);
 
-    public MeshLoader(MemoryContext context) {
+    public TexturedModelLoader(MemoryContext context) {
         super(context);
     }
 
-    public MeshVao loadSimpleMesh(float[] positions, int[] indices) {
+    public TexturedModel loadSimpleMesh(float[] positions, int[] indices) {
         int vaoID = createVAO();
         bindVao(vaoID);
         int indicesVboId = bindIndicesBuffer(indices);
@@ -27,17 +28,19 @@ public class MeshLoader extends Loader {
 
         unbindVao();
         unbindIndicesBuffer();
-        MeshVao mesh = new MeshVao(vaoID, indices.length, indicesVboId, verticesVboId, 0, 0, null);
+        TexturedModel mesh = new TexturedModel(
+                new TexturedVao(vaoID, indices.length, indicesVboId, verticesVboId, 0, 0),
+                null);
         context.put(mesh);
         LOGGER.info("Loaded vao {}", vaoID);
         return mesh;
     }
 
-    public MeshVao loadTexturedMesh(float[] positions, int[] indices, float[] textureCoords, String textureFile) {
+    public TexturedModel loadTexturedMesh(float[] positions, int[] indices, float[] textureCoords, String textureFile) {
         return loadModelMesh(positions, indices, textureCoords, new float[]{0.0f}, textureFile);
     }
 
-    public MeshVao loadModelMesh(float[] positions, int[] indices, float[] textureCoords, float[] normals, String textureFile) {
+    public TexturedModel loadModelMesh(float[] positions, int[] indices, float[] textureCoords, float[] normals, String textureFile) {
         int vaoID = createVAO();
         bindVao(vaoID);
         int indicesVboId = bindIndicesBuffer(indices);
@@ -51,16 +54,17 @@ public class MeshLoader extends Loader {
 
         Texture texture = loadTexture(textureFile);
 
-        MeshVao texturedMesh = new MeshVao(vaoID,
+        TexturedModel texturedMesh = new TexturedModel(
+                new TexturedVao(vaoID,
                 indices.length,
                 indicesVboId,
                 verticesVboId,
                 texturesVboId,
-                normalsVboId,
+                normalsVboId),
                 texture);
 
         context.put(texturedMesh);
-        LOGGER.info("Loaded textured mesh, vao {} tex {}", texturedMesh.getVaoId(), texturedMesh.getTexture().getTextureId());
+        LOGGER.info("Loaded textured mesh, vao {} tex {}", texturedMesh.getVao().getVaoId(), texturedMesh.getTexture().getTextureId());
         return texturedMesh;
     }
 }

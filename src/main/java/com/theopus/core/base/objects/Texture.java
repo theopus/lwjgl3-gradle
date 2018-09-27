@@ -1,13 +1,9 @@
 package com.theopus.core.base.objects;
 
 import com.theopus.core.memory.Resource;
-import com.theopus.core.render.Bindable;
 import org.lwjgl.opengl.GL11;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-
-public class Texture implements Bindable, Resource {
+public class Texture implements Resource {
 
     private int textureId;
     private int width;
@@ -45,16 +41,6 @@ public class Texture implements Bindable, Resource {
     @Override
     public void cleanup() {
         GL11.glDeleteTextures(textureId);
-    }
-
-    @Override
-    public void bind() {
-        glBindTexture(GL_TEXTURE_2D, textureId);
-    }
-
-    @Override
-    public void unbind() {
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public float getShineDumper() {

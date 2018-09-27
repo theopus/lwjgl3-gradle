@@ -1,11 +1,11 @@
 package com.theopus.core.utils;
 
-import com.theopus.core.mesh.MeshLoader;
-import com.theopus.core.mesh.MeshVao;
+import com.theopus.core.base.objects.TexturedModel;
+import com.theopus.core.base.load.TexturedModelLoader;
 
 public class Objects {
 
-    public static MeshVao geCube(MeshLoader loader){
+    public static TexturedModel geCube(TexturedModelLoader loader){
         float[] vertices = {
                 -0.5f,0.5f,-0.5f,
                 -0.5f,-0.5f,-0.5f,

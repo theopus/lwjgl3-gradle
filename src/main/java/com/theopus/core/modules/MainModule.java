@@ -3,7 +3,7 @@ package com.theopus.core.modules;
 import com.theopus.core.App;
 import com.theopus.core.base.render.Renderer;
 import com.theopus.core.memory.MemoryContext;
-import com.theopus.core.mesh.MeshRenderer;
+import com.theopus.core.model.ModelRenderer;
 import com.theopus.core.modules.configs.PerspectiveConfig;
 import com.theopus.core.modules.configs.WindowConfig;
 import com.theopus.core.base.objects.Camera;
@@ -50,7 +50,7 @@ public class MainModule {
     @Inject
     public Renderer renderer(StaticShader shaderProgram, Matrix4f mt, Camera camera) {
         Light light = new Light(new Vector3f(0,0,-20), new Vector3f(1,1,1));
-        return new MeshRenderer(shaderProgram, mt, camera, light);
+        return new ModelRenderer(shaderProgram, mt, camera, light);
     }
 
     @Singleton

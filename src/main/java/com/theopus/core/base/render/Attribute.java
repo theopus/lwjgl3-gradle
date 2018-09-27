@@ -1,4 +1,4 @@
-package com.theopus.core.render;
+package com.theopus.core.base.render;
 
 public enum Attribute {
     VERTICES(0, "position"),

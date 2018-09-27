@@ -1,51 +1,52 @@
 package com.theopus.core.base.render;
 
-import com.theopus.core.base.objects.Vao;
+import com.theopus.core.base.objects.Entity;
+import com.theopus.core.base.objects.Model;
 
 import java.util.*;
 
-public class ButchRenderer<T> {
+public class ButchRenderer<M extends Model,T extends Entity> {
 
-    private Renderer<T> renderer;
-    private Map<Vao, List<T>> renderMap = new HashMap<>();
+    private Renderer<M,T> renderer;
+    private Map<M, List<T>> renderMap = new HashMap<>();
 
-    public ButchRenderer(Renderer<T> renderer) {
+    public ButchRenderer(Renderer<M,T> renderer) {
         this.renderer = renderer;
     }
 
-    public ButchRenderer<T> put(Vao vao, T t){
-        if(renderMap.containsKey(vao)){
-            renderMap.get(vao).add(t);
+    public ButchRenderer<M,T> put(M m, T t){
+        if(renderMap.containsKey(m)){
+            renderMap.get(m).add(t);
         } else {
-            renderMap.put(vao, Arrays.asList(t));
+            renderMap.put(m, Arrays.asList(t));
         }
         return this;
     }
 
-    public ButchRenderer<T> put(Vao vao, List<T> t){
-        if(renderMap.containsKey(vao)){
-            renderMap.get(vao).addAll(t);
+    public ButchRenderer<M,T> put(M m, List<T> t){
+        if(renderMap.containsKey(m)){
+            renderMap.get(m).addAll(t);
         } else {
-            renderMap.put(vao, t);
+            renderMap.put(m, t);
         }
         return this;
     }
 
-    public ButchRenderer<T> render(Vao vao) {
-        renderList(renderMap.getOrDefault(vao, Collections.emptyList()));
+    public ButchRenderer<M,T> render(M m) {
+        renderList(m,renderMap.getOrDefault(m, Collections.emptyList()));
         return this;
     }
 
-    public ButchRenderer<T> render() {
-        renderMap.forEach((vao, ts) -> renderList(ts));
+    public ButchRenderer<M,T> render() {
+        renderMap.forEach(this::renderList);
         return this;
     }
 
-    private void renderList(List<T> ts) {
+    private void renderList(M M, List<T> ts) {
         if (!ts.isEmpty()) {
-            renderer.preRender(ts.get(0));
+            renderer.preRender(M);
             ts.forEach(t -> renderer.render(t));
-            renderer.postRender(ts.get(0));
+            renderer.postRender(M);
         }
     }
 

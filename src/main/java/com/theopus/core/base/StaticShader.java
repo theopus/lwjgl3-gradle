@@ -1,6 +1,6 @@
 package com.theopus.core.base;
 
-import com.theopus.core.render.Attribute;
+import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
