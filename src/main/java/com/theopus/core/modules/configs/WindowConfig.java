@@ -8,16 +8,16 @@ public class WindowConfig {
     private int height;
     private Vector4f color;
     private boolean primitivesCompatible;
-    private int fpsCap;
+    private int vSync;
 
-    public WindowConfig(int width, int height, Vector4f color, int fpsCap) {
+    public WindowConfig(int width, int height, Vector4f color, int vSync) {
         this.width = width;
         this.height = height;
         this.color = color;
-        this.fpsCap = fpsCap;
+        this.vSync = vSync;
     }
-    public WindowConfig(int width, int height, Vector4f color, boolean primitivesCompatible, int fpsCap) {
-        this(width, height, color, fpsCap);
+    public WindowConfig(int width, int height, Vector4f color, boolean primitivesCompatible, int vSync) {
+        this(width, height, color, vSync);
         this.primitivesCompatible = primitivesCompatible;
     }
 
@@ -41,11 +41,11 @@ public class WindowConfig {
         return primitivesCompatible;
     }
 
-    public int getFpsCap() {
-        return fpsCap;
+    public int getvSync() {
+        return vSync;
     }
 
-    public void setFpsCap(int fpsCap) {
-        this.fpsCap = fpsCap;
+    public void setvSync(int vSync) {
+        this.vSync = vSync;
     }
 }

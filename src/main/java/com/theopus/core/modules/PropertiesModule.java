@@ -1,5 +1,6 @@
 package com.theopus.core.modules;
 
+import com.theopus.core.modules.configs.LoopConfig;
 import com.theopus.core.modules.configs.PerspectiveConfig;
 import com.theopus.core.modules.configs.WindowConfig;
 import dagger.Module;
@@ -31,7 +32,16 @@ public class PropertiesModule {
                         Float.valueOf(getOrThrow("window.cc.b")),
                         Float.valueOf(getOrThrow("window.cc.a"))
                 ),
-                Integer.valueOf(getOrThrow("window.fps.cap")));
+                Integer.valueOf(getOrThrow("window.vsync")));
+    }
+
+    @Provides
+    public LoopConfig lconfig() {
+        return new LoopConfig(
+                Integer.valueOf(getOrThrow("loop.fps")),
+                Integer.valueOf(getOrThrow("loop.ups")),
+                Boolean.valueOf(getOrThrow("loop.logs.enabled"))
+        );
     }
 
     @Provides

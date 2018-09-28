@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -91,9 +92,8 @@ public class Loader {
 
     protected Texture loadTexture(String path) {
 
-        try {
-
-            PNGDecoder decoder = new PNGDecoder(Loader.class.getClassLoader().getResourceAsStream(path));
+        try (InputStream resourceAsStream = Loader.class.getClassLoader().getResourceAsStream(path);){
+            PNGDecoder decoder = new PNGDecoder(resourceAsStream);
             int width = decoder.getWidth();
             int height = decoder.getHeight();
 

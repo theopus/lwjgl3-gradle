@@ -1,9 +1,11 @@
 package com.theopus.core.modules;
 
 import com.theopus.core.App;
+import com.theopus.core.Loop;
 import com.theopus.core.base.render.Renderer;
 import com.theopus.core.memory.MemoryContext;
 import com.theopus.core.model.ModelRenderer;
+import com.theopus.core.modules.configs.LoopConfig;
 import com.theopus.core.modules.configs.PerspectiveConfig;
 import com.theopus.core.modules.configs.WindowConfig;
 import com.theopus.core.base.objects.Camera;
@@ -23,6 +25,14 @@ import javax.inject.Singleton;
 
 @Module
 public class MainModule {
+
+
+    @Singleton
+    @Provides
+    @Inject
+    public Loop loop(LoopConfig loopConfig){
+        return new Loop(loopConfig);
+    }
 
     @Singleton
     @Provides
@@ -85,7 +95,8 @@ public class MainModule {
     public App app(WindowManager wm,
                    Renderer renderer,
                    MemoryContext ctx,
-                   Camera camera) {
-        return new App(wm, renderer, ctx, camera);
+                   Camera camera,
+                   Loop loop) {
+        return new App(wm, renderer, ctx, camera, loop);
     }
 }

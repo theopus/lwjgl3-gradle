@@ -11,18 +11,25 @@ import com.theopus.core.utils.ObjParser;
 import com.theopus.core.window.WindowManager;
 import org.joml.Vector3f;
 
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class App {
 
     private final WindowManager windowManager;
     private final Renderer renderer;
     private MemoryContext context;
     private Camera camera;
+    private Loop loop;
 
-    public App(WindowManager windowManager, Renderer renderer, MemoryContext context, Camera camera) {
+    public App(WindowManager windowManager, Renderer renderer, MemoryContext context, Camera camera, Loop loop) {
         this.windowManager = windowManager;
         this.renderer = renderer;
         this.context = context;
         this.camera = camera;
+        this.loop = loop;
     }
 
     public void run() throws Exception {
@@ -51,13 +58,11 @@ public class App {
 //                "whiteIm.png");
 
 //        ThreadLocalRandom rand = ThreadLocalRandom.current();
-//        MeshVao cubeVao = Objects.geCube(texturedModelLoader);
-//        cubeVao.setTexture(dragonVao.getTexture());
-//        float min = -700f;
-//        float max = 700;
-//
-//        List<ModelEntity> collect = IntStream.range(0, 5_000).mapToObj(value -> {
-//            ModelEntity m = new ModelEntity(stallVao);
+//        float min = -200f;
+//        float max = 200;
+////
+//        List<ModelEntity> collect = IntStream.range(0, 20).mapToObj(value -> {
+//            ModelEntity m = new ModelEntity(dragonVao);
 //            m.setScale(rand.nextFloat());
 //            m.setPosition(new Vector3f(
 //                    (float) ((Math.random()) * (max - min) + min),
@@ -76,55 +81,18 @@ public class App {
         ButchRenderer<TexturedModel, ModelEntity> butchRenderer = new ButchRenderer<TexturedModel, ModelEntity>(renderer);
         butchRenderer.put(dragonVao, dragonEntity);
 
-
-        int ups = 0;
-        int fps = 0;
-
-
-        long renderNanoPerFrame = (long) ((1d / 80) * 1000_000_000);
-        long updNanoPerFrame = (long) ((1d / 60) * 1_000_000_000);
-
-        System.out.println(renderNanoPerFrame);
-        System.out.println(updNanoPerFrame);
-
-
-        long before = System.nanoTime();
-        long now;
-        long elapsed;
-        long frameEndTime;
-        long steps = 0;
-
-        long countStart = System.nanoTime();
-        while (!windowManager.windowShouldClose()) {
-            if((System.nanoTime() - countStart) > 1000_000_000){
-                countStart = System.nanoTime();
-                System.out.println("FPS = " + fps);
-                System.out.println("UPS = " + ups);
-                ups = 0;
-                fps = 0;
-            }
-            now = System.nanoTime();
-            elapsed = now - before;
-            before = now;
-            steps += elapsed;
-
-            while (steps >= updNanoPerFrame){
-                dragonEntity.increaseRotY(3);
-                camera.update();
-                steps -= updNanoPerFrame;
-                ups++;
-            }
-
-            butchRenderer.render();
-            windowManager.update();
-            fps++;
-
-            frameEndTime = now + renderNanoPerFrame;
-            while (System.nanoTime() < frameEndTime){
-                Thread.sleep(1);
-            }
-
-        }
+        loop
+                .input(() -> System.out.println("Input"))
+                .update(() -> {
+                    dragonEntity.increaseRotY(1);
+                    camera.update();
+                })
+                .render(() -> {
+                    butchRenderer.render();
+                    windowManager.update();
+                })
+                .interruptOn(windowManager::windowShouldClose)
+                .loop();
 
         windowManager.close();
         context.close();

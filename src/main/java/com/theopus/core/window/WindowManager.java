@@ -29,14 +29,14 @@ public class WindowManager implements Closeable {
     public int width;
     public int height;
     public long window;
-    private int fpsCap;
+    private int vSync;
 
     public WindowManager(WindowConfig windowConfig, GLFWKeyCallbackI listener) {
         this.width = windowConfig.getWidth();
         this.height = windowConfig.getHeight();
         this.listener = listener;
         this.color = windowConfig.getColor();
-        this.fpsCap = windowConfig.getFpsCap();
+        this.vSync = windowConfig.getvSync();
         this.primitiveCompatible = windowConfig.isPrimitivesCompatible();
     }
 
@@ -94,7 +94,7 @@ public class WindowManager implements Closeable {
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
 //        glViewport(0,0, width, height);
-        glfwSwapInterval(fpsCap);
+        glfwSwapInterval(vSync);
         GL11.glClearColor(color.x, color.y, color.z, color.w);
         LOGGER.info("Finished init of GLFW.");
     }
