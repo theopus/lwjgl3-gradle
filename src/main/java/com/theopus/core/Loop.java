@@ -42,6 +42,7 @@ public class Loop {
         long accelerated = 0;
         counterStart = sync.getTime();
 
+        input.process();
         while (!interrupt.check()) {
 
             if (showLogs) {

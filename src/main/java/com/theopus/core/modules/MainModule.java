@@ -42,8 +42,8 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public Camera camera(KeyListener listener){
-        Camera camera = new Camera(listener);
+    public Camera camera(){
+        Camera camera = new Camera();
         return camera;
     }
 
@@ -96,7 +96,7 @@ public class MainModule {
                    Renderer renderer,
                    MemoryContext ctx,
                    Camera camera,
-                   Loop loop) {
-        return new App(wm, renderer, ctx, camera, loop);
+                   Loop loop, KeyListener keyListener) {
+        return new App(wm, renderer, ctx, camera, loop, keyListener);
     }
 }

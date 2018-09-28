@@ -8,6 +8,7 @@ import com.theopus.core.base.render.Renderer;
 import com.theopus.core.memory.MemoryContext;
 import com.theopus.core.model.ModelEntity;
 import com.theopus.core.utils.ObjParser;
+import com.theopus.core.window.KeyListener;
 import com.theopus.core.window.WindowManager;
 import org.joml.Vector3f;
 
@@ -23,13 +24,15 @@ public class App {
     private MemoryContext context;
     private Camera camera;
     private Loop loop;
+    private KeyListener keyListener;
 
-    public App(WindowManager windowManager, Renderer renderer, MemoryContext context, Camera camera, Loop loop) {
+    public App(WindowManager windowManager, Renderer renderer, MemoryContext context, Camera camera, Loop loop, KeyListener keyListener) {
         this.windowManager = windowManager;
         this.renderer = renderer;
         this.context = context;
         this.camera = camera;
         this.loop = loop;
+        this.keyListener = keyListener;
     }
 
     public void run() throws Exception {
@@ -82,10 +85,9 @@ public class App {
         butchRenderer.put(dragonVao, dragonEntity);
 
         loop
-                .input(() -> System.out.println("Input"))
+                .input(() -> camera.handle(keyListener))
                 .update(() -> {
                     dragonEntity.increaseRotY(1);
-                    camera.update();
                 })
                 .render(() -> {
                     butchRenderer.render();
