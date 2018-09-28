@@ -30,9 +30,8 @@ public class PropertiesModule {
                         Float.valueOf(getOrThrow("window.cc.g")),
                         Float.valueOf(getOrThrow("window.cc.b")),
                         Float.valueOf(getOrThrow("window.cc.a"))
-                )
-
-        );
+                ),
+                Integer.valueOf(getOrThrow("window.fps.cap")));
     }
 
     @Provides

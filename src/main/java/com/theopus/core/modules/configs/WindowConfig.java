@@ -1,6 +1,5 @@
 package com.theopus.core.modules.configs;
 
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 public class WindowConfig {
@@ -9,14 +8,16 @@ public class WindowConfig {
     private int height;
     private Vector4f color;
     private boolean primitivesCompatible;
+    private int fpsCap;
 
-    public WindowConfig(int width, int height, Vector4f color) {
+    public WindowConfig(int width, int height, Vector4f color, int fpsCap) {
         this.width = width;
         this.height = height;
         this.color = color;
+        this.fpsCap = fpsCap;
     }
-    public WindowConfig(int width, int height, Vector4f color, boolean primitivesCompatible) {
-        this(width, height, color);
+    public WindowConfig(int width, int height, Vector4f color, boolean primitivesCompatible, int fpsCap) {
+        this(width, height, color, fpsCap);
         this.primitivesCompatible = primitivesCompatible;
     }
 
@@ -38,5 +39,13 @@ public class WindowConfig {
 
     public boolean isPrimitivesCompatible() {
         return primitivesCompatible;
+    }
+
+    public int getFpsCap() {
+        return fpsCap;
+    }
+
+    public void setFpsCap(int fpsCap) {
+        this.fpsCap = fpsCap;
     }
 }

@@ -24,8 +24,8 @@ public class LabTest {
     @Test
     public void run() {
         WindowManager manager = new WindowManager(new WindowConfig(
-                600, 400, new Vector4f(0, 0, 0, 1), true
-        ), (window, key, scancode, action, mods) -> {
+                600, 400, new Vector4f(0, 0, 0, 1), true,
+                60), (window, key, scancode, action, mods) -> {
             if (action != GLFW.GLFW_RELEASE) {
                 lines.add(generateLine());
             }
