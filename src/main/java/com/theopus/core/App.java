@@ -86,9 +86,7 @@ public class App {
 
         loop
                 .input(() -> camera.handle(keyListener))
-                .update(() -> {
-                    dragonEntity.increaseRotY(1);
-                })
+                .update(() -> dragonEntity.increaseRotY(1))
                 .render(() -> {
                     butchRenderer.render();
                     windowManager.update();

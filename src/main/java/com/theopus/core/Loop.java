@@ -42,7 +42,7 @@ public class Loop {
         long accelerated = 0;
         counterStart = sync.getTime();
 
-        input.process();
+
         while (!interrupt.check()) {
 
             if (showLogs) {
@@ -59,6 +59,8 @@ public class Loop {
             elapsed = now - before;
             before = now;
             accelerated += elapsed;
+
+            input.process();
 
             while (accelerated >= updNanoPerFrame) {
                 update.process();
