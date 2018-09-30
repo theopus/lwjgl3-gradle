@@ -1,7 +1,7 @@
 package com.theopus.core;
 
 import com.theopus.core.modules.configs.WindowConfig;
-import com.theopus.core.window.WindowManager;
+import com.theopus.core.base.window.WindowManager;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;

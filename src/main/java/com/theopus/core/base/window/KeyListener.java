@@ -1,4 +1,4 @@
-package com.theopus.core.window;
+package com.theopus.core.base.window;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class KeyListener implements GLFWKeyCallbackI {

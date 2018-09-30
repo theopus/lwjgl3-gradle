@@ -1,6 +1,6 @@
 package com.theopus.core.base.objects;
 
-import com.theopus.core.memory.Resource;
+import com.theopus.core.base.memory.Resource;
 
 import java.util.Objects;
 

@@ -1,7 +1,7 @@
 package com.theopus.core.shaders;
 
-import com.theopus.core.base.ShaderProgram;
-import com.theopus.core.window.WindowManager;
+import com.theopus.core.base.shader.ShaderProgram;
+import com.theopus.core.base.window.WindowManager;
 import org.junit.Test;
 
 import java.io.IOException;

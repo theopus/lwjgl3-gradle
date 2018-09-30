@@ -1,9 +1,7 @@
 package com.theopus.core.base.objects;
 
-import com.theopus.core.base.objects.Entity;
-import com.theopus.core.window.InputHadler;
-import com.theopus.core.window.KeyListener;
-import com.theopus.core.base.Updatable;
+import com.theopus.core.base.window.InputHadler;
+import com.theopus.core.base.window.KeyListener;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -44,11 +42,23 @@ public class Camera extends Entity implements InputHadler {
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_E)) {
             this.increaseRotY(3);
         }
+        if (keyListener.isKeyPressed(GLFW.GLFW_KEY_R)) {
+            this.increaseRotZ(-3);
+        }
+        if (keyListener.isKeyPressed(GLFW.GLFW_KEY_F)) {
+            this.increaseRotZ(3);
+        }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
             this.increasePosY(0.1f);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_C)) {
             this.increasePosY(-0.1f);
+        }
+        if (keyListener.isKeyPressed(GLFW.GLFW_KEY_Y)) {
+            this.setPosition(new Vector3f(0,0,0));
+            this.setRotX(0);
+            this.setRotY(0);
+            this.setRotZ(0);
         }
     }
 }

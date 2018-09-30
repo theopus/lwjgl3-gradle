@@ -1,7 +1,7 @@
-package com.theopus.core.base;
+package com.theopus.core.base.shader;
 
 import com.theopus.core.base.exceptions.OpenGLEngineException;
-import com.theopus.core.memory.Resource;
+import com.theopus.core.base.memory.Resource;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

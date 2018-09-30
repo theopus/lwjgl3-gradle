@@ -28,8 +28,10 @@ public class Loop {
     private Interrupt interrupt;
 
     private Sync sync = new Sync();
+    private boolean vSyncEnabled;
 
-    public Loop(LoopConfig loopConfig) {
+    public Loop(LoopConfig loopConfig, boolean vSyncEnabled) {
+        this.vSyncEnabled = vSyncEnabled;
         this.fps(loopConfig.getFps());
         this.ups(loopConfig.getUps());
         this.showLogs = loopConfig.isLogsEnabled();
@@ -69,7 +71,9 @@ public class Loop {
             }
             this.render.process();
             cfps++;
-            this.sync.sync(fps);
+            if (!vSyncEnabled) {
+                this.sync.sync(fps);
+            }
         }
     }
 

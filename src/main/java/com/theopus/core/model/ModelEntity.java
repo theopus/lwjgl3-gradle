@@ -6,6 +6,8 @@ import com.theopus.core.base.objects.Entity;
 
 public class ModelEntity extends Entity {
 
+
+    public String name;
     private TexturedModel tModel;
 
     public ModelEntity(TexturedModel tModel) {

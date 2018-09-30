@@ -1,4 +1,4 @@
-package com.theopus.core.memory;
+package com.theopus.core.base.memory;
 
 public interface Resource {
 

@@ -2,7 +2,7 @@ package com.theopus.core.base.load;
 
 import com.theopus.core.base.objects.Texture;
 import com.theopus.core.base.render.Attribute;
-import com.theopus.core.memory.MemoryContext;
+import com.theopus.core.base.memory.MemoryContext;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;

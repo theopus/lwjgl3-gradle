@@ -1,7 +1,6 @@
-package com.theopus.core.base;
+package com.theopus.core.base.shader;
 
-import com.theopus.core.base.ShaderProgram;
-import com.theopus.core.base.StaticShader;
+import com.theopus.core.terrain.TerrainShader;
 
 import java.io.IOException;
 

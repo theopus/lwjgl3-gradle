@@ -1,4 +1,4 @@
-package com.theopus.core.window;
+package com.theopus.core.base.window;
 
 import com.theopus.core.modules.configs.WindowConfig;
 import org.joml.Vector4f;

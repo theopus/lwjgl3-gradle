@@ -2,47 +2,24 @@ package com.theopus.core.base.render;
 
 import com.theopus.core.base.objects.Entity;
 import com.theopus.core.base.objects.Model;
-import com.theopus.core.base.objects.Texture;
-import org.lwjgl.opengl.*;
+
+import java.util.List;
+import java.util.Map;
 
 public interface Renderer<M extends Model, E extends Entity> {
 
-    Renderer<M, E> render(E e);
+    Renderer<M, E> render();
 
-    Renderer<M, E> preRender(M t);
-
-    Renderer<M, E> postRender(M t);
-
-    default void bindVao(Model meshVao){
-        GL30.glBindVertexArray(meshVao.getVao().getVaoId());
+    public static<M extends Model, E extends Entity> SingleRenderer<M, E> singleOf(RenderCommand<M, E> command, M m, E e) {
+        return new SingleRenderer<>(command, m, e);
     }
 
-    default void unbindVao(){
-        GL30.glBindVertexArray(0);
+    public static <M extends Model, E extends Entity> BatchRenderer<M, E> batchOf(RenderCommand<M, E> command) {
+        return new BatchRenderer<>(command);
     }
 
-    default void bindVbo(Attribute vertices){
-        GL20.glEnableVertexAttribArray(vertices.getPosition());
+    public static <M extends Model, E extends Entity> BatchRenderer<M, E> batchOf(RenderCommand<M, E> command, Map<M, List<E>> renderMap) {
+        return new BatchRenderer<>(command, renderMap);
     }
-
-    default void unbindVbo(Attribute vertices){
-        GL20.glDisableVertexAttribArray(vertices.getPosition());
-    }
-
-    default void bindTexture(Texture texture){
-//        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureId());
-    }
-
-    default void unbindTexture() {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-    }
-
-
-//    default Renderer<E> fullrender(E t){
-//        return preRender(t)
-//                .render(t)
-//                .postRender(t);
-//    }
 
 }

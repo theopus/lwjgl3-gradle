@@ -4,7 +4,7 @@ import com.theopus.core.base.objects.Texture;
 import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.objects.TexturedVao;
 import com.theopus.core.base.render.Attribute;
-import com.theopus.core.memory.MemoryContext;
+import com.theopus.core.base.memory.MemoryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,5 +66,9 @@ public class TexturedModelLoader extends Loader {
         context.put(texturedMesh);
         LOGGER.info("Loaded textured mesh, vao {} tex {}", texturedMesh.getVao().getVaoId(), texturedMesh.getTexture().getTextureId());
         return texturedMesh;
+    }
+
+    public MemoryContext getMemoryContext() {
+        return this.context;
     }
 }

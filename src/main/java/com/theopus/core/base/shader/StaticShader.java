@@ -1,4 +1,4 @@
-package com.theopus.core.base;
+package com.theopus.core.base.shader;
 
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
@@ -59,6 +59,7 @@ public class StaticShader extends ShaderProgram {
     public void loadShineDamper(float value) {
         super.loadFloat(shineDamperLocation, value);
     }
+
     public void loadReflectivity(float value) {
         super.loadFloat(reflectivityLocation, value);
     }

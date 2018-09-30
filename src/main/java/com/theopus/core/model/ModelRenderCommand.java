@@ -1,18 +1,18 @@
 package com.theopus.core.model;
 
 import com.theopus.core.base.objects.*;
-import com.theopus.core.base.render.Renderer;
-import com.theopus.core.base.StaticShader;
+import com.theopus.core.base.render.RenderCommand;
+import com.theopus.core.base.shader.StaticShader;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-public class ModelRenderer implements Renderer<TexturedModel, ModelEntity> {
+public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEntity> {
     private final Camera camera;
     private final Light light;
     private final StaticShader shader;
 
-    public ModelRenderer(StaticShader shader, Matrix4f pjMtx, Camera camera, Light light) {
+    public ModelRenderCommand(StaticShader shader, Matrix4f pjMtx, Camera camera, Light light) {
         this.camera = camera;
         this.shader = shader;
         this.light = light;
@@ -23,7 +23,7 @@ public class ModelRenderer implements Renderer<TexturedModel, ModelEntity> {
     }
 
     @Override
-    public ModelRenderer render(ModelEntity modelEntity) {
+    public ModelRenderCommand render(ModelEntity modelEntity) {
         shader.loadTransformationMatrix(modelEntity.transformationMatrix());
 
         GL11.glDrawElements(GL11.GL_TRIANGLES, modelEntity.gettModel().getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
@@ -31,12 +31,11 @@ public class ModelRenderer implements Renderer<TexturedModel, ModelEntity> {
     }
 
     @Override
-    public ModelRenderer preRender(TexturedModel model) {
+    public ModelRenderCommand preRender(TexturedModel model) {
         // gl stuff
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         // prep
         bindVao(model);
@@ -56,7 +55,7 @@ public class ModelRenderer implements Renderer<TexturedModel, ModelEntity> {
     }
 
     @Override
-    public ModelRenderer postRender(TexturedModel model) {
+    public ModelRenderCommand postRender(TexturedModel model) {
         // unbind
         unbindVao();
         unbindVbo(Attribute.VERTICES);

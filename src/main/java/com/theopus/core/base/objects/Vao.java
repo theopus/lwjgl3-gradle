@@ -1,6 +1,6 @@
 package com.theopus.core.base.objects;
 
-import com.theopus.core.memory.Resource;
+import com.theopus.core.base.memory.Resource;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 
