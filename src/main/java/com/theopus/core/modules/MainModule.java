@@ -2,9 +2,13 @@ package com.theopus.core.modules;
 
 import com.theopus.core.App;
 import com.theopus.core.Loop;
+import com.theopus.core.Render;
+import com.theopus.core.base.load.TexturedModelLoader;
+import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.render.BatchRenderer;
 import com.theopus.core.base.render.RenderCommand;
 import com.theopus.core.base.memory.MemoryContext;
+import com.theopus.core.model.ModelEntity;
 import com.theopus.core.model.ModelRenderCommand;
 import com.theopus.core.modules.configs.LoopConfig;
 import com.theopus.core.modules.configs.PerspectiveConfig;
@@ -13,6 +17,7 @@ import com.theopus.core.base.objects.Camera;
 import com.theopus.core.base.objects.Light;
 import com.theopus.core.base.shader.ShaderFactory;
 import com.theopus.core.base.shader.StaticShader;
+import com.theopus.core.terrain.Terrain;
 import com.theopus.core.terrain.TerrainLoader;
 import com.theopus.core.terrain.TerrainRenderCommand;
 import com.theopus.core.terrain.TerrainShader;
@@ -35,10 +40,20 @@ public class MainModule {
     @Singleton
     @Provides
     @Inject
-    public Loop loop(LoopConfig loopConfig, WindowConfig windowConfig, Camera camera, KeyListener listener){
-        return new Loop(loopConfig, windowConfig.getvSync() > 0).input(() -> {
-            camera.handle(listener);
-        });
+    public Loop loop(LoopConfig loopConfig,
+                     WindowConfig windowConfig,
+                     Camera camera,
+                     KeyListener listener,
+                     Render render,
+                     WindowManager windowManager) {
+
+        return new Loop(loopConfig, windowConfig.getvSync() > 0)
+                .input(() -> camera.handle(listener))
+                .render(() -> {
+                    render.render();
+                    windowManager.update();
+                })
+                .interruptOn(windowManager::windowShouldClose);
     }
 
     @Singleton
@@ -49,7 +64,7 @@ public class MainModule {
 
     @Singleton
     @Provides
-    public Camera camera(){
+    public Camera camera() {
         Camera camera = new Camera();
         return camera;
     }
@@ -65,8 +80,8 @@ public class MainModule {
     @Singleton
     @Provides
     @Inject
-    public Light light(){
-        return new Light(new Vector3f(3000,2000,2000), new Vector3f(1,1,1));
+    public Light light() {
+        return new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1, 1));
     }
 
     @Singleton
@@ -90,10 +105,24 @@ public class MainModule {
     @Singleton
     @Inject
     public App app(WindowManager wm,
-                   ModelRenderCommand renderer,
                    MemoryContext ctx,
                    Loop loop,
-                   TerrainLoader terrainLoader) {
-        return new App(wm, renderer, ctx, loop, terrainLoader);
+                   TexturedModelLoader texturedModelLoader,
+                   TerrainLoader terrainLoader,
+                   BatchRenderer<TexturedModel, ModelEntity> modelRenderer,
+                   BatchRenderer<TexturedModel, Terrain> terrainRenderer
+    ) {
+        return new App(wm, ctx, loop, texturedModelLoader, terrainLoader, modelRenderer, terrainRenderer);
+    }
+
+    @Provides
+    @Singleton
+    @Inject
+    public Render render(BatchRenderer<TexturedModel, ModelEntity> modelRenderer,
+                         BatchRenderer<TexturedModel, Terrain> terrainRenderer) {
+        Render render = new Render();
+        render.add(modelRenderer);
+        render.add(terrainRenderer);
+        return render;
     }
 }
