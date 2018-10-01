@@ -27,10 +27,22 @@ public abstract class Entity extends Point {
         this.scale = scale;
     }
 
+    public Entity(Vector3f position) {
+        super(position);
+        this.rotX = 0f;
+        this.rotY = 0f;
+        this.rotZ = 0f;
+        this.scale = 1f;
+    }
+
+    public Entity(Vector3f position, float scale) {
+        super(position);
+        this.scale = scale;
+    }
+
     public Matrix4f transformationMatrix() {
         return Maths.createTransformationMatrix(getPosition(), getRotX(), getRotY(), getRotZ(), getScale());
     }
-
 
     public float increaseRotX(float deltaRotX) {
         return rotX += deltaRotX;

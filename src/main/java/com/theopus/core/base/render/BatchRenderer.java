@@ -23,7 +23,9 @@ public class BatchRenderer<M extends Model, E extends Entity> implements Rendere
         if (renderMap.containsKey(m)) {
             renderMap.get(m).add(e);
         } else {
-            renderMap.put(m, Arrays.asList(e));
+            ArrayList<E> ms = new ArrayList<>();
+            ms.add(e);
+            renderMap.put(m, ms);
         }
         return this;
     }

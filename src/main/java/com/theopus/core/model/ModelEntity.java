@@ -14,6 +14,16 @@ public class ModelEntity extends Entity {
         this.tModel = tModel;
     }
 
+    public ModelEntity(TexturedModel tModel, Vector3f position) {
+        super(position);
+        this.tModel = tModel;
+    }
+
+    public ModelEntity(TexturedModel tModel, Vector3f position, float scale) {
+        super(position, scale);
+        this.tModel = tModel;
+    }
+
     public ModelEntity(Vector3f position, float rotX, float rotY, float rotZ, float scale, TexturedModel tModel) {
         super(position, rotX, rotY, rotZ, scale);
         this.tModel = tModel;

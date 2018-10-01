@@ -30,7 +30,7 @@ public interface RenderCommand<M extends Model, E extends Entity> {
     }
 
     default void bindTexture(Texture texture){
-//        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureId());
     }
 

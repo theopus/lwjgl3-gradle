@@ -9,7 +9,10 @@ import com.theopus.core.model.ModelEntity;
 import com.theopus.core.terrain.Terrain;
 import com.theopus.core.terrain.TerrainLoader;
 import com.theopus.core.utils.ObjParser;
+import com.theopus.core.utils.Objects;
 import org.joml.Vector3f;
+
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -34,14 +37,24 @@ public class App {
     public void run() throws Exception {
         windowManager.showWindow();
 
+        ObjParser.Result treeParse = ObjParser.parse("tree.obj");
+
+        TexturedModel treeModel = texturedModelLoader.loadModelMesh(
+                treeParse.getPosArr(),
+                treeParse.getIndicesArr(),
+                treeParse.getTextCoordArr(),
+                treeParse.getNormArr(),
+                "tree.png");
+
+
         ObjParser.Result parse = ObjParser.parse("dragon.obj");
+
         TexturedModel dragonVao = texturedModelLoader.loadModelMesh(
                 parse.getPosArr(),
                 parse.getIndicesArr(),
                 parse.getTextCoordArr(),
                 parse.getNormArr(),
                 "whiteIm.png");
-
         dragonVao.getTexture().setReflictivity(1);
         dragonVao.getTexture().setShineDumper(10);
 
@@ -58,11 +71,16 @@ public class App {
 
 
         Terrain ter = new Terrain(terrainModel);
-        ter.setPosition(new Vector3f(0,-5,0));
+        ter.setPosition(new Vector3f(0, -5, 0));
+
+        modelRenderer.put(treeModel,
+                Objects.generatePoints(
+                        new Vector3f(-600, -5, -600),
+                        new Vector3f(600, -5, 600),
+                        600).stream().map(v3 -> new ModelEntity(treeModel, v3, 5)).collect(Collectors.toList()));
 
         modelRenderer.put(dragonVao, dragonEntity);
         terrainRenderer.put(terrainModel, ter);
-
 
         loop
                 .update(() -> dragonEntity.increaseRotY(1))
