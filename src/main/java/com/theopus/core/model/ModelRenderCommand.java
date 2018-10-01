@@ -26,16 +26,15 @@ public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEnt
     public ModelRenderCommand render(ModelEntity modelEntity) {
         shader.loadTransformationMatrix(modelEntity.transformationMatrix());
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, modelEntity.gettModel().getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        trianglesDraw(modelEntity.gettModel());
         return this;
     }
 
     @Override
     public ModelRenderCommand preRender(TexturedModel model) {
         // gl stuff
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_BACK);
+        enableDepthTest();
+        enableCulling();
 
         // prep
         bindVao(model);

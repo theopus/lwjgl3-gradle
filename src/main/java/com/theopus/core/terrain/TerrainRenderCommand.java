@@ -28,7 +28,7 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
     public RenderCommand<TexturedModel, Terrain> render(Terrain terrain) {
         shader.loadTransformationMatrix(terrain.transformationMatrix());
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, terrain.getTexturedModel().getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        trianglesDraw(terrain.getTexturedModel());
         return this;
     }
 

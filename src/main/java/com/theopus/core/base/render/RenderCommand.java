@@ -13,6 +13,29 @@ public interface RenderCommand<M extends Model, E extends Entity> {
 
     RenderCommand<M, E> postRender(M t);
 
+
+    default void trianglesDraw(M m){
+        GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVao().getVaoId(), GL11.GL_UNSIGNED_INT, 0);
+    }
+
+    default void enableCulling(){
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
+    }
+
+    default void disableCulling(){
+        GL11.glDisable(GL11.GL_CULL_FACE);
+
+    }
+
+    default void enableDepthTest(){
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+    }
+
+    default void disbleDepthTest(){
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+    }
+
     default void bindVao(Model meshVao){
         GL30.glBindVertexArray(meshVao.getVao().getVaoId());
     }
