@@ -10,7 +10,10 @@ public class Texture implements Resource {
     private int height;
 
     private float shineDumper = 1;
-    private float reflictivity = 0;
+    private float reflectivity = 0;
+
+    private boolean hasTransparency;
+    private boolean useFakeLight;
 
     public Texture(int textureId, int width, int height) {
         this.textureId = textureId;
@@ -34,8 +37,8 @@ public class Texture implements Resource {
         this.shineDumper = shineDumper;
     }
 
-    public void setReflictivity(float reflictivity) {
-        this.reflictivity = reflictivity;
+    public void setReflectivity(float reflectivity) {
+        this.reflectivity = reflectivity;
     }
 
     @Override
@@ -47,7 +50,23 @@ public class Texture implements Resource {
         return shineDumper;
     }
 
-    public float getReflictivity() {
-        return reflictivity;
+    public float getReflectivity() {
+        return reflectivity;
+    }
+
+    public boolean isHasTransparency() {
+        return hasTransparency;
+    }
+
+    public void setHasTransparency(boolean hasTransparency) {
+        this.hasTransparency = hasTransparency;
+    }
+
+    public boolean isUseFakeLight() {
+        return useFakeLight;
+    }
+
+    public void setUseFakeLight(boolean useFakeLight) {
+        this.useFakeLight = useFakeLight;
     }
 }

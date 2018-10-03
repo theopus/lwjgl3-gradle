@@ -55,7 +55,7 @@ public class App {
                 parse.getTextCoordArr(),
                 parse.getNormArr(),
                 "whiteIm.png");
-        dragonVao.getTexture().setReflictivity(1);
+        dragonVao.getTexture().setReflectivity(1);
         dragonVao.getTexture().setShineDumper(10);
 
         ModelEntity dragonEntity = new ModelEntity(dragonVao);

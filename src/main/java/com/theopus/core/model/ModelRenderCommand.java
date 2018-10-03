@@ -5,7 +5,6 @@ import com.theopus.core.base.render.RenderCommand;
 import com.theopus.core.base.shader.StaticShader;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEntity> {
     private final Camera camera;
@@ -48,7 +47,7 @@ public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEnt
         shader.loadViewMatrix(camera.viewMatrix());
         shader.loadLightPosition(light.getPosition());
         shader.loadLightColor(light.getColor());
-        shader.loadReflectivity(model.getTexture().getReflictivity());
+        shader.loadReflectivity(model.getTexture().getReflectivity());
         shader.loadShineDamper(model.getTexture().getShineDumper());
         return this;
     }

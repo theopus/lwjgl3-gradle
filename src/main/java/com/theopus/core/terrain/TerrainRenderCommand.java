@@ -6,7 +6,6 @@ import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.render.Attribute;
 import com.theopus.core.base.render.RenderCommand;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrain> {
 
@@ -51,7 +50,7 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
         shader.loadViewMatrix(camera.viewMatrix());
         shader.loadLightPosition(light.getPosition());
         shader.loadLightColor(light.getColor());
-        shader.loadReflectivity(t.getTexture().getReflictivity());
+        shader.loadReflectivity(t.getTexture().getReflectivity());
         shader.loadShineDamper(t.getTexture().getShineDumper());
         return this;
     }
