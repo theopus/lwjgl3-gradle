@@ -15,7 +15,7 @@ public interface RenderCommand<M extends Model, E extends Entity> {
 
 
     default void trianglesDraw(M m){
-        GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVao().getVaoId(), GL11.GL_UNSIGNED_INT, 0);
+        GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
     }
 
     default void enableCulling(){

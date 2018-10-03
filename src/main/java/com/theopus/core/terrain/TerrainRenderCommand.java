@@ -35,9 +35,9 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
     @Override
     public RenderCommand<TexturedModel, Terrain> preRender(TexturedModel t) {
         // gl stuff
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_BACK);
+        // gl stuff
+        enableDepthTest();
+        enableCulling();
 
         // prep
         bindVao(t);
