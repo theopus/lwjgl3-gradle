@@ -13,6 +13,8 @@ public class StaticShader extends ShaderProgram {
     private int lightColorLocation;
     private int shineDamperLocation;
     private int reflectivityLocation;
+    private int useFakeLightLocation;
+    private int hasTransparencyLocation;
 
     public StaticShader(int programID, int vertexShaderID) {
         super(programID, vertexShaderID);
@@ -27,6 +29,8 @@ public class StaticShader extends ShaderProgram {
         lightColorLocation = super.getUniformLocation(Uniforms.LIGHT_COLOR);
         shineDamperLocation = super.getUniformLocation(Uniforms.SHINE_DAMPER);
         reflectivityLocation = super.getUniformLocation(Uniforms.REFLECTIVITY);
+        useFakeLightLocation = super.getUniformLocation(Uniforms.USE_FAKE_LIGHT);
+        hasTransparencyLocation = super.getUniformLocation(Uniforms.HAS_TRANSPARENCY);
     }
 
     @Override
@@ -36,7 +40,7 @@ public class StaticShader extends ShaderProgram {
         super.bindAttribute(Attribute.NORMALS);
     }
 
-    public void loadTransformationMatrix(Matrix4f matrix4f){
+    public void loadTransformationMatrix(Matrix4f matrix4f) {
         super.loadMatrix4f(transMatrixLocation, matrix4f);
     }
 
@@ -64,4 +68,11 @@ public class StaticShader extends ShaderProgram {
         super.loadFloat(reflectivityLocation, value);
     }
 
+    public void loadUseFakeLight(boolean value) {
+        super.loadFloat(useFakeLightLocation, value ? 1 : 0);
+    }
+
+    public void loadHasTransparency(boolean value) {
+        super.loadFloat(hasTransparencyLocation, value ? 1 : 0);
+    }
 }

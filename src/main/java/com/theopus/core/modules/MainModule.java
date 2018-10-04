@@ -88,7 +88,11 @@ public class MainModule {
     @Provides
     @Inject
     public Matrix4f projectionMatrix(WindowManager windowManager, PerspectiveConfig pc) {
-        Matrix4f projMatrix = Maths.createProjectionMatrix(pc.getFov(), pc.getNear(), pc.getFar(), windowManager.getWidth(), windowManager.getHeight());
+        Matrix4f projMatrix = Maths.createProjectionMatrixAuto(
+                (float) Math.toRadians(pc.getFov()),
+                pc.getNear(),
+                pc.getFar(),
+                (float)windowManager.getWidth() / (float) windowManager.getHeight());
         return projMatrix;
     }
 

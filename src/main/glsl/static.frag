@@ -7,11 +7,12 @@ in vec3 toCameraVector;
 
 uniform sampler2D textureSampler;
 
-out vec4 out_Colour;
+out vec4 out_Color;
 
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform float hasTransparency;
 
 void main(void){
 
@@ -34,5 +35,11 @@ void main(void){
 
     vec3 finalSpecularFactor = dampedFactor * reflectivity * lightColor;
 
-    out_Colour = vec4(diffuse, 1.0) * texture(textureSampler, passTextureCoords) + vec4(finalSpecularFactor, 1.0);
+    vec4 textureColor = texture(textureSampler, passTextureCoords);
+
+    if (hasTransparency > 0 && textureColor.a < 0.5){
+        discard;
+    }
+
+    out_Color = vec4(diffuse, 1.0) *  textureColor + vec4(finalSpecularFactor, 1.0);
 }

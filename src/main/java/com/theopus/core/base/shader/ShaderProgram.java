@@ -132,5 +132,7 @@ public abstract class ShaderProgram implements Resource {
         public static final String LIGHT_COLOR = "lightColor";
         public static final String SHINE_DAMPER = "shineDamper";
         public static final String REFLECTIVITY = "reflectivity";
+        public static final String USE_FAKE_LIGHT = "useFakeLight";
+        public static final String HAS_TRANSPARENCY = "hasTransparency";
     }
 }

@@ -33,7 +33,11 @@ public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEnt
     public ModelRenderCommand preRender(TexturedModel model) {
         // gl stuff
         enableDepthTest();
-        enableCulling();
+        if (!model.getTexture().isHasTransparency()) {
+            enableCulling();
+        } else {
+            disableCulling();
+        }
 
         // prep
         bindVao(model);
@@ -49,11 +53,16 @@ public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEnt
         shader.loadLightColor(light.getColor());
         shader.loadReflectivity(model.getTexture().getReflectivity());
         shader.loadShineDamper(model.getTexture().getShineDumper());
+        shader.loadUseFakeLight(model.getTexture().isUseFakeLight());
+        shader.loadHasTransparency(model.getTexture().isHasTransparency());
         return this;
     }
 
     @Override
     public ModelRenderCommand postRender(TexturedModel model) {
+        if (model.getTexture().isHasTransparency()){
+            enableCulling();
+        }
         // unbind
         unbindVao();
         unbindVbo(Attribute.VERTICES);

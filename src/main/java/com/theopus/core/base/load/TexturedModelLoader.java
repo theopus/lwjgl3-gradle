@@ -5,8 +5,11 @@ import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.objects.TexturedVao;
 import com.theopus.core.base.render.Attribute;
 import com.theopus.core.base.memory.MemoryContext;
+import com.theopus.core.utils.ObjParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Created by Oleksandr_Tkachov on 18.03.2018.
@@ -56,11 +59,11 @@ public class TexturedModelLoader extends Loader {
 
         TexturedModel texturedMesh = new TexturedModel(
                 new TexturedVao(vaoID,
-                indices.length,
-                indicesVboId,
-                verticesVboId,
-                texturesVboId,
-                normalsVboId),
+                        indices.length,
+                        indicesVboId,
+                        verticesVboId,
+                        texturesVboId,
+                        normalsVboId),
                 texture);
 
         context.put(texturedMesh);
@@ -70,5 +73,16 @@ public class TexturedModelLoader extends Loader {
 
     public MemoryContext getMemoryContext() {
         return this.context;
+    }
+
+    public TexturedModel loadTexturedModel(String obj, String texture) throws IOException {
+        ObjParser.Result parse = ObjParser.parse(obj);
+
+        return loadModelMesh(
+                parse.getPosArr(),
+                parse.getIndicesArr(),
+                parse.getTextCoordArr(),
+                parse.getNormArr(),
+                texture);
     }
 }

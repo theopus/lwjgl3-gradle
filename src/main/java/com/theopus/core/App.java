@@ -37,28 +37,21 @@ public class App {
     public void run() throws Exception {
         windowManager.showWindow();
 
-        ObjParser.Result treeParse = ObjParser.parse("tree.obj");
-
-        TexturedModel treeModel = texturedModelLoader.loadModelMesh(
-                treeParse.getPosArr(),
-                treeParse.getIndicesArr(),
-                treeParse.getTextCoordArr(),
-                treeParse.getNormArr(),
-                "tree.png");
+        TexturedModel grassModel = texturedModelLoader.loadTexturedModel("grassModel.obj", "grassTexture.png");
+        grassModel.getTexture().setHasTransparency(true);
+        grassModel.getTexture().setUseFakeLight(true);
+        TexturedModel fernModel = texturedModelLoader.loadTexturedModel("fern.obj", "fern.png");
+        fernModel.getTexture().setHasTransparency(true);
+        fernModel.getTexture().setUseFakeLight(true);
 
 
-        ObjParser.Result parse = ObjParser.parse("dragon.obj");
+        TexturedModel treeModel = texturedModelLoader.loadTexturedModel("tree.obj", "tree.png");
+        TexturedModel dragonModel = texturedModelLoader.loadTexturedModel("dragon.obj", "whiteIm.png");
 
-        TexturedModel dragonVao = texturedModelLoader.loadModelMesh(
-                parse.getPosArr(),
-                parse.getIndicesArr(),
-                parse.getTextCoordArr(),
-                parse.getNormArr(),
-                "whiteIm.png");
-        dragonVao.getTexture().setReflectivity(1);
-        dragonVao.getTexture().setShineDumper(10);
+        dragonModel.getTexture().setReflectivity(1);
+        dragonModel.getTexture().setShineDumper(10);
 
-        ModelEntity dragonEntity = new ModelEntity(dragonVao);
+        ModelEntity dragonEntity = new ModelEntity(dragonModel);
         dragonEntity.setScale(0.75f);
         dragonEntity.setPosition(new Vector3f(20, 5, 20));
 
@@ -79,7 +72,18 @@ public class App {
                         new Vector3f(600, -5, 600),
                         600).stream().map(v3 -> new ModelEntity(treeModel, v3, 5)).collect(Collectors.toList()));
 
-        modelRenderer.put(dragonVao, dragonEntity);
+        modelRenderer.put(fernModel,
+                Objects.generatePoints(
+                        new Vector3f(-600, -5, -600),
+                        new Vector3f(600, -5, 600),
+                        600).stream().map(v3 -> new ModelEntity(fernModel, v3, 1)).collect(Collectors.toList()));
+        modelRenderer.put(grassModel,
+                Objects.generatePoints(
+                        new Vector3f(-600, -5, -600),
+                        new Vector3f(600, -5, 600),
+                        600).stream().map(v3 -> new ModelEntity(grassModel, v3, 1)).collect(Collectors.toList()));
+
+        modelRenderer.put(dragonModel, dragonEntity);
         terrainRenderer.put(terrainModel, ter);
 
         loop
