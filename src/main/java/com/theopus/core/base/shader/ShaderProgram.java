@@ -46,11 +46,15 @@ public abstract class ShaderProgram implements Resource {
     protected abstract void getAllUniformLocations();
 
     protected int getUniformLocation(String uniformName) {
-        return GL20.glGetUniformLocation(programID, uniformName);
+        int i = GL20.glGetUniformLocation(programID, uniformName);
+        LOGGER.info("Uniform {} to {}", uniformName, i);
+        return i;
     }
 
     protected int getStructUniformLocation(String structName, String uniformName) {
-        return GL20.glGetUniformLocation(programID, structName + uniformName);
+        int i = GL20.glGetUniformLocation(programID, structName + uniformName);
+        LOGGER.info("Struct uniform {} to {}", structName + uniformName, i);
+        return i;
     }
 
     protected abstract void bindAllAttributes();
@@ -154,12 +158,20 @@ public abstract class ShaderProgram implements Resource {
 
 
         static class Material {
-            public static final String VARIABLE = "material";
+            public static final String VARIABLE = "mat";
             public static final String HAS_TEXTURE = ".hasTexture";
             public static final String REFLECTIVITY = ".reflectivity";
             public static final String SHINE_DAMPER = ".shineDamper";
             public static final String HAS_TRANSPARENCY = ".hasTransparency";
             public static final String USE_FAKE_LIGHT = ".useFakeLight";
+        }
+
+        static class Fog {
+            public static final String VARIABLE = "fog";
+            public static final String ENABLED = ".enabled";
+            public static final String COLOR = ".color";
+            public static final String DESITY = ".density";
+            public static final String GRADIENT = ".gradient";
         }
     }
 }

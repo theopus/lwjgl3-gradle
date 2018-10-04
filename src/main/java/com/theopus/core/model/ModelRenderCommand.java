@@ -5,6 +5,7 @@ import com.theopus.core.base.render.RenderCommand;
 import com.theopus.core.base.shader.StaticShader;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class ModelRenderCommand implements RenderCommand<MaterialModel, ModelEntity> {
     private final Camera camera;
@@ -18,6 +19,7 @@ public class ModelRenderCommand implements RenderCommand<MaterialModel, ModelEnt
 
         shader.bind();
         shader.loadProjectionMatrix(pjMtx);
+        shader.loadFog(new Fog(new Vector3f(0.5f,0.5f,0.5f)));
         shader.unbind();
     }
 
@@ -33,10 +35,13 @@ public class ModelRenderCommand implements RenderCommand<MaterialModel, ModelEnt
     public ModelRenderCommand preRender(MaterialModel model) {
         // gl stuff
         enableDepthTest();
-        if (!model.getMaterial().getTexture().isHasTransparency()) {
-            enableCulling();
-        } else {
-            disableCulling();
+        if (model.getMaterial().isHasTexture()) {
+            if (!model.getMaterial().getTexture().isHasTransparency()) {
+                enableCulling();
+            } else {
+                disableCulling();
+            }
+            bindTexture(model.getMaterial().getTexture());
         }
 
         // prep
@@ -44,7 +49,6 @@ public class ModelRenderCommand implements RenderCommand<MaterialModel, ModelEnt
         bindVbo(Attribute.VERTICES);
         bindVbo(Attribute.TEXTURE_COORDS);
         bindVbo(Attribute.NORMALS);
-        bindTexture(model.getMaterial().getTexture());
 
         // shader
         shader.bind();
@@ -58,15 +62,17 @@ public class ModelRenderCommand implements RenderCommand<MaterialModel, ModelEnt
 
     @Override
     public ModelRenderCommand postRender(MaterialModel model) {
-        if (model.getMaterial().getTexture().isHasTransparency()){
-            enableCulling();
+        if (model.getMaterial().isHasTexture()) {
+            if (model.getMaterial().getTexture().isHasTransparency()) {
+                enableCulling();
+            }
+            unbindTexture();
         }
         // unbind
         unbindVao();
         unbindVbo(Attribute.VERTICES);
         unbindVbo(Attribute.TEXTURE_COORDS);
         unbindVbo(Attribute.NORMALS);
-        unbindTexture();
         // shader
         shader.unbind();
         return this;

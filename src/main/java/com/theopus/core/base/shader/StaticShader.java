@@ -1,5 +1,6 @@
 package com.theopus.core.base.shader;
 
+import com.theopus.core.base.objects.Fog;
 import com.theopus.core.base.objects.Material;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
@@ -19,6 +20,11 @@ public class StaticShader extends ShaderProgram {
     private int materialShineDamperLocation;
     private int materialUseFakeLightLocation;
 
+    private int fogEnabled;
+    private int fogColor;
+    private int fogDensity;
+    private int fogGradient;
+
     public StaticShader(int programID, int vertexShaderID) {
         super(programID, vertexShaderID);
     }
@@ -36,6 +42,11 @@ public class StaticShader extends ShaderProgram {
         materialReflectivityLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.REFLECTIVITY);
         materialShineDamperLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.SHINE_DAMPER);
         materialUseFakeLightLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.USE_FAKE_LIGHT);
+
+        fogEnabled = super.getStructUniformLocation(Uniforms.Fog.VARIABLE, Uniforms.Fog.ENABLED);
+        fogColor = super.getStructUniformLocation(Uniforms.Fog.VARIABLE, Uniforms.Fog.COLOR);
+        fogDensity = super.getStructUniformLocation(Uniforms.Fog.VARIABLE, Uniforms.Fog.DESITY);
+        fogGradient = super.getStructUniformLocation(Uniforms.Fog.VARIABLE, Uniforms.Fog.GRADIENT);
     }
 
     @Override
@@ -76,5 +87,12 @@ public class StaticShader extends ShaderProgram {
         super.loadFloat(materialReflectivityLocation, material.getReflectivity());
         super.loadFloat(materialShineDamperLocation, material.getShineDamper());
         super.loadBool(materialUseFakeLightLocation, material.isUseFakeLight());
+    }
+
+    public void loadFog(Fog fog){
+        super.loadBool(fogEnabled, fog.isEnabled());
+        super.loadVector3f(fogColor, fog.getColor());
+        super.loadFloat(fogDensity, fog.getDensity());
+        super.loadFloat(fogGradient, fog.getGradient());
     }
 }

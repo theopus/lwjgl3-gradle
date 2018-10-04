@@ -5,45 +5,41 @@ in vec2 passTextureCoords;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec3 toCameraVector;
+in float fogFactor;
 
 out vec4 out_Color;
 
 uniform sampler2D textureSampler;
 uniform vec3 lightColor;
-uniform Material material;
+uniform Material mat;
+uniform Fog fog;
 
 const vec4 whiteColor = vec4(1,1,1,1);
+const float ambient = 0.2;
 
 void main(void){
-
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitToLight = normalize(toLightVector);
-    float nDot = dot(unitNormal, unitToLight);
-    float britghtness = max(nDot, 0.2);
+    vec3 unitToCam = normalize(toCameraVector);
 
-    vec3 diffuse = britghtness * lightColor;
+    vec4 diffuse = getDiffuse(unitNormal, unitToLight, lightColor);
+    float specular = getSpecular(unitNormal, unitToLight, unitToCam, mat);
 
-    vec3 unitVectorToCamera = normalize(toCameraVector);
-    vec3 lightDirection = -unitToLight;
-    vec3 reflectedDirection = reflect(lightDirection, unitNormal);
+    vec4 textureColor;
 
-    float rDot = dot(reflectedDirection, unitVectorToCamera);
-    float specularFactor = max(rDot, 0.0);
-
-    float dampedFactor = pow(specularFactor, material.shineDamper);
-
-    float finalSpecularFactor = dampedFactor * material.reflectivity;
-
-    if (material.hasTexture > 0){
-        vec4 textureColor = texture(textureSampler, passTextureCoords);
-
-            if (material.hasTransparency > 0 && textureColor.a < 0.5){
+    if (mat.hasTexture > 0){
+        textureColor = texture(textureSampler, passTextureCoords);
+            if (mat.hasTransparency > 0 && textureColor.a < 0.5){
                 discard;
             }
-
-            out_Color = vec4(diffuse, 1.0) *  textureColor + finalSpecularFactor * textureColor;
     } else {
-        out_Color = vec4(diffuse, 1.0) * whiteColor + finalSpecularFactor * whiteColor;
+        textureColor = whiteColor;
     }
 
+    out_Color = diffuse * textureColor +\
+                specular * textureColor +\
+                ambient * textureColor;
+    if (fog.enabled > 0) {
+        out_Color = mix(vec4(fog.color, 1.0), out_Color, fogFactor);
+    }
 }

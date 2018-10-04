@@ -9,16 +9,19 @@ out vec2 passTextureCoords;
 out vec3 surfaceNormal;
 out vec3 toLightVector;
 out vec3 toCameraVector;
+out float fogFactor;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
-uniform Material material;
+
+uniform Material mat;
+uniform Fog fog;
 
 const vec3 yNormal = vec3(0,1,0);
-const float gradient = 0.1;
-const float density = 0.1;
+const float gradient = 1.5;
+const float density = 0.007;
 
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
@@ -27,8 +30,7 @@ void main(void){
     gl_Position = projectionMatrix * toCamPosition;
 
     vec3 acutalNormal = normal;
-
-    if (material.useFakeLight > 0){
+    if (mat.useFakeLight > 0){
         acutalNormal = yNormal;
     }
 
@@ -40,5 +42,5 @@ void main(void){
     passTextureCoords = textureCoords;
 
     float distance = length(toCamPosition.xyz);
-//    float visibility
+    fogFactor = getFogFactor(distance, fog);
 }
