@@ -18,13 +18,16 @@ import java.nio.FloatBuffer;
 
 public abstract class ShaderProgram implements Resource {
 
+    private static final String COMMONS_FILE = "commons.glsl";
+    private static final String COMMONS_PLACEHOLDER = "#include commons";
+
     private final int programID;
     private final int vertexShaderID;
     private final int fragmentShaderID;
 
     private final FloatBuffer matrixBuffer;
 
-    public static Logger LOGGER = LoggerFactory.getLogger(ShaderProgram.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ShaderProgram.class);
 
     public ShaderProgram(int vertexShaderID, int fragmentShaderID) {
         this.vertexShaderID = vertexShaderID;
@@ -93,6 +96,28 @@ public abstract class ShaderProgram implements Resource {
     }
 
     public static int loadShader(String file, Type type) throws IOException {
+        StringBuilder shaderSource = fileToStringBuilder(file);
+        StringBuilder shaderCommons = fileToStringBuilder(COMMONS_FILE);
+
+        String shaderPreprocessed = shaderSource.toString().replaceAll(COMMONS_PLACEHOLDER,
+                "\n//PREPROCESSOR INSERTED --- START\n" +
+                shaderCommons.toString() +
+                "\n//PREPROCESSOR INSERTED --- FINISH\n"
+        );
+
+        LOGGER.info("SHADER = \n{}", shaderPreprocessed);
+        int shaderID = GL20.glCreateShader(type.binding());
+        GL20.glShaderSource(shaderID, shaderPreprocessed);
+        GL20.glCompileShader(shaderID);
+        if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            throw new OpenGLEngineException(String.format("Exception during initializing of [%s] shader, shader file: [%s]", type, file),
+                    GL20.glGetShaderInfoLog(shaderID, 10_000));
+
+        }
+        return shaderID;
+    }
+
+    private static StringBuilder fileToStringBuilder(String file) throws IOException {
         StringBuilder shaderSource = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ShaderProgram.class.getClassLoader().getResourceAsStream(file)))) {
@@ -101,17 +126,7 @@ public abstract class ShaderProgram implements Resource {
                 shaderSource.append(line).append('\n');
             }
         }
-
-        LOGGER.info("SHADER = \n{}", shaderSource.toString());
-        int shaderID = GL20.glCreateShader(type.binding());
-        GL20.glShaderSource(shaderID, shaderSource);
-        GL20.glCompileShader(shaderID);
-        if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            throw new OpenGLEngineException(String.format("Exception during initializing of [%s] shader, shader file: [%s]", type, file),
-                    GL20.glGetShaderInfoLog(shaderID, 10_000));
-
-        }
-        return shaderID;
+        return shaderSource;
     }
 
 

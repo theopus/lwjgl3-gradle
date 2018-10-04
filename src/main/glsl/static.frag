@@ -1,12 +1,5 @@
 #version 400
-
-struct Material {
-    float hasTexture;
-    float reflectivity;
-    float shineDamper;
-    float hasTransparency;
-    float useFakeLight;
-};
+#include commons
 
 in vec2 passTextureCoords;
 in vec3 surfaceNormal;
