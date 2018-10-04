@@ -3,24 +3,19 @@ package com.theopus.core.modules;
 import com.theopus.core.App;
 import com.theopus.core.Loop;
 import com.theopus.core.Render;
-import com.theopus.core.base.load.TexturedModelLoader;
+import com.theopus.core.base.load.MaterialModelLoader;
+import com.theopus.core.base.objects.MaterialModel;
 import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.render.BatchRenderer;
-import com.theopus.core.base.render.RenderCommand;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.model.ModelEntity;
-import com.theopus.core.model.ModelRenderCommand;
 import com.theopus.core.modules.configs.LoopConfig;
 import com.theopus.core.modules.configs.PerspectiveConfig;
 import com.theopus.core.modules.configs.WindowConfig;
 import com.theopus.core.base.objects.Camera;
 import com.theopus.core.base.objects.Light;
-import com.theopus.core.base.shader.ShaderFactory;
-import com.theopus.core.base.shader.StaticShader;
 import com.theopus.core.terrain.Terrain;
 import com.theopus.core.terrain.TerrainLoader;
-import com.theopus.core.terrain.TerrainRenderCommand;
-import com.theopus.core.terrain.TerrainShader;
 import com.theopus.core.utils.Maths;
 import com.theopus.core.base.window.KeyListener;
 import com.theopus.core.base.window.WindowManager;
@@ -31,7 +26,6 @@ import org.joml.Vector3f;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
 
 @Module
 public class MainModule {
@@ -111,18 +105,18 @@ public class MainModule {
     public App app(WindowManager wm,
                    MemoryContext ctx,
                    Loop loop,
-                   TexturedModelLoader texturedModelLoader,
+                   MaterialModelLoader materialModelLoader,
                    TerrainLoader terrainLoader,
-                   BatchRenderer<TexturedModel, ModelEntity> modelRenderer,
+                   BatchRenderer<MaterialModel, ModelEntity> modelRenderer,
                    BatchRenderer<TexturedModel, Terrain> terrainRenderer
     ) {
-        return new App(wm, ctx, loop, texturedModelLoader, terrainLoader, modelRenderer, terrainRenderer);
+        return new App(wm, ctx, loop, materialModelLoader, terrainLoader, modelRenderer, terrainRenderer);
     }
 
     @Provides
     @Singleton
     @Inject
-    public Render render(BatchRenderer<TexturedModel, ModelEntity> modelRenderer,
+    public Render render(BatchRenderer<MaterialModel, ModelEntity> modelRenderer,
                          BatchRenderer<TexturedModel, Terrain> terrainRenderer) {
         Render render = new Render();
         render.add(modelRenderer);

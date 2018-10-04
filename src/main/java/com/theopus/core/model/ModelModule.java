@@ -1,10 +1,11 @@
 package com.theopus.core.model;
 
 
-import com.theopus.core.base.load.TexturedModelLoader;
+import com.theopus.core.base.load.MaterialModelLoader;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.base.objects.Camera;
 import com.theopus.core.base.objects.Light;
+import com.theopus.core.base.objects.MaterialModel;
 import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.render.BatchRenderer;
 import com.theopus.core.base.render.Renderer;
@@ -31,7 +32,7 @@ public class ModelModule {
     @Singleton
     @Provides
     @Inject
-    public BatchRenderer<TexturedModel, ModelEntity> renderer(ModelRenderCommand command) {
+    public BatchRenderer<MaterialModel, ModelEntity> renderer(ModelRenderCommand command) {
         return Renderer.batchOf(command);
     }
 
@@ -48,8 +49,8 @@ public class ModelModule {
     @Singleton
     @Provides
     @Inject
-    public TexturedModelLoader texturedModelLoader(MemoryContext context) {
-        return new TexturedModelLoader(context);
+    public MaterialModelLoader texturedModelLoader(MemoryContext context) {
+        return new MaterialModelLoader(context);
     }
 
 }

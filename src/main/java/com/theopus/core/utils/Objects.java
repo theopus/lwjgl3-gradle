@@ -1,17 +1,17 @@
 package com.theopus.core.utils;
 
+import com.theopus.core.base.load.MaterialModelLoader;
+import com.theopus.core.base.objects.MaterialModel;
 import com.theopus.core.base.objects.TexturedModel;
-import com.theopus.core.base.load.TexturedModelLoader;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Objects {
 
-    public static TexturedModel geCube(TexturedModelLoader loader){
+    public static MaterialModel geCube(MaterialModelLoader loader){
         float[] vertices = {
                 -0.5f,0.5f,-0.5f,
                 -0.5f,-0.5f,-0.5f,

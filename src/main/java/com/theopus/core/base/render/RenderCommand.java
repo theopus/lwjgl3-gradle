@@ -14,7 +14,7 @@ public interface RenderCommand<M extends Model, E extends Entity> {
     RenderCommand<M, E> postRender(M t);
 
 
-    default void trianglesDraw(M m){
+    default<Mod extends com.theopus.core.base.objects.Model> void trianglesDraw(Mod m){
         GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
     }
 

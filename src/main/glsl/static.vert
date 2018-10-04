@@ -1,5 +1,13 @@
 #version 400
 
+struct Material {
+    float hasTexture;
+    float reflectivity;
+    float shineDamper;
+    float hasTransparency;
+    float useFakeLight;
+};
+
 layout (location=0) in vec3 position;
 layout (location=1) in vec2 textureCoords;
 layout (location=2) in vec3 normal;
@@ -13,9 +21,11 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
-uniform float useFakeLight;
+uniform Material material;
 
 const vec3 yNormal = vec3(0,1,0);
+const float gradient = 0.1;
+const float density = 0.1;
 
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
@@ -25,7 +35,7 @@ void main(void){
 
     vec3 acutalNormal = normal;
 
-    if (useFakeLight > 0){
+    if (material.useFakeLight > 0){
         acutalNormal = yNormal;
     }
 
@@ -37,4 +47,5 @@ void main(void){
     passTextureCoords = textureCoords;
 
     float distance = length(toCamPosition.xyz);
+//    float visibility
 }

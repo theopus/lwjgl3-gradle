@@ -1,24 +1,30 @@
 #version 400
 
+struct Material {
+    float hasTexture;
+    float reflectivity;
+    float shineDamper;
+    float hasTransparency;
+    float useFakeLight;
+};
+
 in vec2 passTextureCoords;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec3 toCameraVector;
 
-uniform sampler2D textureSampler;
-
 out vec4 out_Color;
 
+uniform sampler2D textureSampler;
 uniform vec3 lightColor;
-uniform float shineDamper;
-uniform float reflectivity;
-uniform float hasTransparency;
+uniform Material material;
+
+const vec4 whiteColor = vec4(1,1,1,1);
 
 void main(void){
 
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitToLight = normalize(toLightVector);
-
     float nDot = dot(unitNormal, unitToLight);
     float britghtness = max(nDot, 0.2);
 
@@ -31,15 +37,20 @@ void main(void){
     float rDot = dot(reflectedDirection, unitVectorToCamera);
     float specularFactor = max(rDot, 0.0);
 
-    float dampedFactor = pow(specularFactor, shineDamper);
+    float dampedFactor = pow(specularFactor, material.shineDamper);
 
-    vec3 finalSpecularFactor = dampedFactor * reflectivity * lightColor;
+    float finalSpecularFactor = dampedFactor * material.reflectivity;
 
-    vec4 textureColor = texture(textureSampler, passTextureCoords);
+    if (material.hasTexture > 0){
+        vec4 textureColor = texture(textureSampler, passTextureCoords);
 
-    if (hasTransparency > 0 && textureColor.a < 0.5){
-        discard;
+            if (material.hasTransparency > 0 && textureColor.a < 0.5){
+                discard;
+            }
+
+            out_Color = vec4(diffuse, 1.0) *  textureColor + finalSpecularFactor * textureColor;
+    } else {
+        out_Color = vec4(diffuse, 1.0) * whiteColor + finalSpecularFactor * whiteColor;
     }
 
-    out_Color = vec4(diffuse, 1.0) *  textureColor + vec4(finalSpecularFactor, 1.0);
 }

@@ -50,8 +50,6 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
         shader.loadViewMatrix(camera.viewMatrix());
         shader.loadLightPosition(light.getPosition());
         shader.loadLightColor(light.getColor());
-        shader.loadReflectivity(t.getTexture().getReflectivity());
-        shader.loadShineDamper(t.getTexture().getShineDumper());
         return this;
     }
 

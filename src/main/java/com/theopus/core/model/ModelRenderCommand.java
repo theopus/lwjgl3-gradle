@@ -6,7 +6,7 @@ import com.theopus.core.base.shader.StaticShader;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 
-public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEntity> {
+public class ModelRenderCommand implements RenderCommand<MaterialModel, ModelEntity> {
     private final Camera camera;
     private final Light light;
     private final StaticShader shader;
@@ -30,10 +30,10 @@ public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEnt
     }
 
     @Override
-    public ModelRenderCommand preRender(TexturedModel model) {
+    public ModelRenderCommand preRender(MaterialModel model) {
         // gl stuff
         enableDepthTest();
-        if (!model.getTexture().isHasTransparency()) {
+        if (!model.getMaterial().getTexture().isHasTransparency()) {
             enableCulling();
         } else {
             disableCulling();
@@ -44,23 +44,21 @@ public class ModelRenderCommand implements RenderCommand<TexturedModel, ModelEnt
         bindVbo(Attribute.VERTICES);
         bindVbo(Attribute.TEXTURE_COORDS);
         bindVbo(Attribute.NORMALS);
-        bindTexture(model.getTexture());
+        bindTexture(model.getMaterial().getTexture());
 
         // shader
         shader.bind();
         shader.loadViewMatrix(camera.viewMatrix());
         shader.loadLightPosition(light.getPosition());
         shader.loadLightColor(light.getColor());
-        shader.loadReflectivity(model.getTexture().getReflectivity());
-        shader.loadShineDamper(model.getTexture().getShineDumper());
-        shader.loadUseFakeLight(model.getTexture().isUseFakeLight());
-        shader.loadHasTransparency(model.getTexture().isHasTransparency());
+        shader.loadMaterial(model.getMaterial());
+
         return this;
     }
 
     @Override
-    public ModelRenderCommand postRender(TexturedModel model) {
-        if (model.getTexture().isHasTransparency()){
+    public ModelRenderCommand postRender(MaterialModel model) {
+        if (model.getMaterial().getTexture().isHasTransparency()){
             enableCulling();
         }
         // unbind

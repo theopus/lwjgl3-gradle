@@ -1,5 +1,7 @@
 package com.theopus.core.model;
 
+import com.theopus.core.base.objects.MaterialModel;
+import com.theopus.core.base.objects.Model;
 import com.theopus.core.base.objects.TexturedModel;
 import org.joml.Vector3f;
 import com.theopus.core.base.objects.Entity;
@@ -8,28 +10,28 @@ public class ModelEntity extends Entity {
 
 
     public String name;
-    private TexturedModel tModel;
+    private Model<?> tModel;
 
-    public ModelEntity(TexturedModel tModel) {
+    public ModelEntity(Model<?> tModel) {
         this.tModel = tModel;
     }
 
-    public ModelEntity(TexturedModel tModel, Vector3f position) {
+    public ModelEntity(Model<?> tModel, Vector3f position) {
         super(position);
         this.tModel = tModel;
     }
 
-    public ModelEntity(TexturedModel tModel, Vector3f position, float scale) {
+    public ModelEntity(Model<?> tModel, Vector3f position, float scale) {
         super(position, scale);
         this.tModel = tModel;
     }
 
-    public ModelEntity(Vector3f position, float rotX, float rotY, float rotZ, float scale, TexturedModel tModel) {
+    public ModelEntity(Vector3f position, float rotX, float rotY, float rotZ, float scale, Model<?> tModel) {
         super(position, rotX, rotY, rotZ, scale);
         this.tModel = tModel;
     }
 
-    public TexturedModel gettModel() {
+    public Model<?> gettModel() {
         return tModel;
     }
 }

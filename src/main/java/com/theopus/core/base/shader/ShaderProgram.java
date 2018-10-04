@@ -46,6 +46,10 @@ public abstract class ShaderProgram implements Resource {
         return GL20.glGetUniformLocation(programID, uniformName);
     }
 
+    protected int getStructUniformLocation(String structName, String uniformName) {
+        return GL20.glGetUniformLocation(programID, structName + uniformName);
+    }
+
     protected abstract void bindAllAttributes();
 
     public void loadFloat(int location, float value) {
@@ -110,6 +114,7 @@ public abstract class ShaderProgram implements Resource {
         return shaderID;
     }
 
+
     public enum Type {
         VERTEX(GL20.GL_VERTEX_SHADER),
         FRAGMENT(GL20.GL_FRAGMENT_SHADER),;
@@ -124,15 +129,22 @@ public abstract class ShaderProgram implements Resource {
         }
     }
 
-    public final class Uniforms {
+
+    public static final class Uniforms {
         public static final String TRANSFORMATION_MATRIX = "transformationMatrix";
         public static final String PROJECTION_MATRIX = "projectionMatrix";
         public static final String VIEW_MATRIX = "viewMatrix";
         public static final String LIGHT_POSITION = "lightPosition";
         public static final String LIGHT_COLOR = "lightColor";
-        public static final String SHINE_DAMPER = "shineDamper";
-        public static final String REFLECTIVITY = "reflectivity";
-        public static final String USE_FAKE_LIGHT = "useFakeLight";
-        public static final String HAS_TRANSPARENCY = "hasTransparency";
+
+
+        static class Material {
+            public static final String VARIABLE = "material";
+            public static final String HAS_TEXTURE = ".hasTexture";
+            public static final String REFLECTIVITY = ".reflectivity";
+            public static final String SHINE_DAMPER = ".shineDamper";
+            public static final String HAS_TRANSPARENCY = ".hasTransparency";
+            public static final String USE_FAKE_LIGHT = ".useFakeLight";
+        }
     }
 }

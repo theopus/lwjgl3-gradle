@@ -1,5 +1,6 @@
 package com.theopus.core.base.shader;
 
+import com.theopus.core.base.objects.Material;
 import com.theopus.core.base.render.Attribute;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -11,10 +12,12 @@ public class StaticShader extends ShaderProgram {
     private int viewMatrixLocation;
     private int lightPositionLocation;
     private int lightColorLocation;
-    private int shineDamperLocation;
-    private int reflectivityLocation;
-    private int useFakeLightLocation;
-    private int hasTransparencyLocation;
+
+    private int materialHasTextureLocation;
+    private int materialHasTransparencyLocation;
+    private int materialReflectivityLocation;
+    private int materialShineDamperLocation;
+    private int materialUseFakeLightLocation;
 
     public StaticShader(int programID, int vertexShaderID) {
         super(programID, vertexShaderID);
@@ -27,10 +30,12 @@ public class StaticShader extends ShaderProgram {
         viewMatrixLocation = super.getUniformLocation(Uniforms.VIEW_MATRIX);
         lightPositionLocation = super.getUniformLocation(Uniforms.LIGHT_POSITION);
         lightColorLocation = super.getUniformLocation(Uniforms.LIGHT_COLOR);
-        shineDamperLocation = super.getUniformLocation(Uniforms.SHINE_DAMPER);
-        reflectivityLocation = super.getUniformLocation(Uniforms.REFLECTIVITY);
-        useFakeLightLocation = super.getUniformLocation(Uniforms.USE_FAKE_LIGHT);
-        hasTransparencyLocation = super.getUniformLocation(Uniforms.HAS_TRANSPARENCY);
+
+        materialHasTextureLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.HAS_TEXTURE);
+        materialHasTransparencyLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.HAS_TRANSPARENCY);
+        materialReflectivityLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.REFLECTIVITY);
+        materialShineDamperLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.SHINE_DAMPER);
+        materialUseFakeLightLocation = super.getStructUniformLocation(Uniforms.Material.VARIABLE, Uniforms.Material.USE_FAKE_LIGHT);
     }
 
     @Override
@@ -60,19 +65,16 @@ public class StaticShader extends ShaderProgram {
         super.loadVector3f(lightColorLocation, position);
     }
 
-    public void loadShineDamper(float value) {
-        super.loadFloat(shineDamperLocation, value);
-    }
+    public void loadMaterial(Material material) {
 
-    public void loadReflectivity(float value) {
-        super.loadFloat(reflectivityLocation, value);
-    }
-
-    public void loadUseFakeLight(boolean value) {
-        super.loadFloat(useFakeLightLocation, value ? 1 : 0);
-    }
-
-    public void loadHasTransparency(boolean value) {
-        super.loadFloat(hasTransparencyLocation, value ? 1 : 0);
+        if (material.isHasTexture()) {
+            super.loadBool(materialHasTextureLocation, material.isHasTexture());
+            super.loadBool(materialHasTransparencyLocation, material.getTexture().isHasTransparency());
+        } else {
+            super.loadBool(materialHasTextureLocation, material.isHasTexture());
+        }
+        super.loadFloat(materialReflectivityLocation, material.getReflectivity());
+        super.loadFloat(materialShineDamperLocation, material.getShineDamper());
+        super.loadBool(materialUseFakeLightLocation, material.isUseFakeLight());
     }
 }

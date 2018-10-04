@@ -9,11 +9,7 @@ public class Texture implements Resource {
     private int width;
     private int height;
 
-    private float shineDumper = 1;
-    private float reflectivity = 0;
-
     private boolean hasTransparency;
-    private boolean useFakeLight;
 
     public Texture(int textureId, int width, int height) {
         this.textureId = textureId;
@@ -33,26 +29,12 @@ public class Texture implements Resource {
         return textureId;
     }
 
-    public void setShineDumper(float shineDumper) {
-        this.shineDumper = shineDumper;
-    }
-
-    public void setReflectivity(float reflectivity) {
-        this.reflectivity = reflectivity;
-    }
 
     @Override
     public void cleanup() {
         GL11.glDeleteTextures(textureId);
     }
 
-    public float getShineDumper() {
-        return shineDumper;
-    }
-
-    public float getReflectivity() {
-        return reflectivity;
-    }
 
     public boolean isHasTransparency() {
         return hasTransparency;
@@ -62,11 +44,4 @@ public class Texture implements Resource {
         this.hasTransparency = hasTransparency;
     }
 
-    public boolean isUseFakeLight() {
-        return useFakeLight;
-    }
-
-    public void setUseFakeLight(boolean useFakeLight) {
-        this.useFakeLight = useFakeLight;
-    }
 }

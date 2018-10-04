@@ -1,7 +1,7 @@
 package com.theopus.core.terrain;
 
 import com.theopus.core.base.exceptions.EngineException;
-import com.theopus.core.base.load.TexturedModelLoader;
+import com.theopus.core.base.load.MaterialModelLoader;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.base.objects.TexturedModel;
 import org.joml.Vector3f;
@@ -9,7 +9,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TerrainLoader extends TexturedModelLoader {
+public class TerrainLoader extends MaterialModelLoader {
 
     public TerrainLoader(MemoryContext context) {
         super(context);
@@ -64,7 +64,7 @@ public class TerrainLoader extends TexturedModelLoader {
             }
         }
 
-        return loadModelMesh(
+        return loadTexturedModel(
                 toArray(vertices),
                 indexes.stream().mapToInt(Integer::intValue).toArray(),
                 toArray(textureCoords),
