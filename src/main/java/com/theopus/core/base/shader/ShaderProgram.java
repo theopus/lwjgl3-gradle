@@ -63,6 +63,10 @@ public abstract class ShaderProgram implements Resource {
         GL20.glUniform1f(location, value);
     }
 
+    public void loadInt(int location, int value) {
+        GL20.glUniform1i(location, value);
+    }
+
     public void loadVector3f(int location, Vector3f value) {
         GL20.glUniform3f(location, value.x, value.y, value.z);
     }
@@ -157,7 +161,7 @@ public abstract class ShaderProgram implements Resource {
         public static final String LIGHT_COLOR = "lightColor";
 
 
-        static class Material {
+        public static class Material {
             public static final String VARIABLE = "mat";
             public static final String HAS_TEXTURE = ".hasTexture";
             public static final String REFLECTIVITY = ".reflectivity";
@@ -166,12 +170,21 @@ public abstract class ShaderProgram implements Resource {
             public static final String USE_FAKE_LIGHT = ".useFakeLight";
         }
 
-        static class Fog {
+        public static class Fog {
             public static final String VARIABLE = "fog";
             public static final String ENABLED = ".enabled";
             public static final String COLOR = ".color";
             public static final String DESITY = ".density";
             public static final String GRADIENT = ".gradient";
+        }
+
+
+        public static class BlendTextures {
+            public static final String BLEND_MAP = "blendMapTexture";
+            public static final String BACKGROUND = "bgTexture";
+            public static final String R = "rTexture";
+            public static final String G = "gTexture";
+            public static final String B = "bTexture";
         }
     }
 }

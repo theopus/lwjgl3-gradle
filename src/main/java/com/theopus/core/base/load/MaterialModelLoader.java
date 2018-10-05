@@ -97,8 +97,49 @@ public class MaterialModelLoader extends Loader {
         return model;
     }
 
+    public TexturePackModel loadTexturedPackModel(float[] positions,
+                                                  int[] indices,
+                                                  float[] textureCoords,
+                                                  float[] normals,
+                                                  String blendMap, String bg, String r, String g, String b) {
+        int vaoID = createVAO();
+        bindVao(vaoID);
+        int indicesVboId = bindIndicesBuffer(indices);
+
+        int verticesVboId = writeInVao(Attribute.VERTICES, 3, positions);
+        int texturesVboId = writeInVao(Attribute.TEXTURE_COORDS, 2, textureCoords);
+        int normalsVboId = writeInVao(Attribute.NORMALS, 3, normals);
+
+        unbindVao();
+        unbindIndicesBuffer();
+
+        TexturePackModel model = new TexturePackModel(
+                new TexturedVao(vaoID,
+                        indices.length,
+                        indicesVboId,
+                        verticesVboId,
+                        texturesVboId,
+                        normalsVboId),
+                loadTexturePack(
+                        blendMap, bg, r, g, b));
+
+        context.put(model);
+        LOGGER.info("Loaded textured mesh, vao {} tex {}", model.getVao().getVaoId());
+        return model;
+    }
+
     public MemoryContext getMemoryContext() {
         return this.context;
+    }
+
+    public BlendTexturePack loadTexturePack(String blendMap, String bg, String r, String g, String b){
+        return new BlendTexturePack(
+            loadTexture(blendMap),
+            loadTexture(bg),
+            loadTexture(r),
+            loadTexture(g),
+            loadTexture(b)
+        );
     }
 
     public MaterialModel loadTexturedModel(String obj, String texture) throws IOException {

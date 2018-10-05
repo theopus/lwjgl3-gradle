@@ -3,6 +3,7 @@ package com.theopus.core;
 import com.theopus.core.base.load.MaterialModelLoader;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.base.objects.MaterialModel;
+import com.theopus.core.base.objects.TexturePackModel;
 import com.theopus.core.base.objects.TexturedModel;
 import com.theopus.core.base.render.BatchRenderer;
 import com.theopus.core.base.window.WindowManager;
@@ -22,9 +23,9 @@ public class App {
     private final MaterialModelLoader materialModelLoader;
     private final TerrainLoader terrainLoader;
     private BatchRenderer<MaterialModel, ModelEntity> modelRenderer;
-    private final BatchRenderer<TexturedModel, Terrain> terrainRenderer;
+    private final BatchRenderer<TexturePackModel, Terrain> terrainRenderer;
 
-    public App(WindowManager windowManager, MemoryContext context, Loop loop, MaterialModelLoader materialModelLoader, TerrainLoader terrainLoader, BatchRenderer<MaterialModel, ModelEntity> modelRenderer, BatchRenderer<TexturedModel, Terrain> terrainRenderer) {
+    public App(WindowManager windowManager, MemoryContext context, Loop loop, MaterialModelLoader materialModelLoader, TerrainLoader terrainLoader, BatchRenderer<MaterialModel, ModelEntity> modelRenderer, BatchRenderer<TexturePackModel, Terrain> terrainRenderer) {
         this.windowManager = windowManager;
         this.context = context;
         this.loop = loop;
@@ -43,13 +44,10 @@ public class App {
         MaterialModel fernModel = materialModelLoader.loadTexturedModel("fern.obj", "fern.png");
         fernModel.getMaterial().getTexture().setHasTransparency(true);
         fernModel.getMaterial().setUseFakeLight(true);
-
-
         MaterialModel treeModel = materialModelLoader.loadTexturedModel("tree.obj", "tree.png");
-        treeModel.getMaterial().setReflectivity(1);
+        treeModel.getMaterial().setReflectivity(0);
         treeModel.getMaterial().setShineDamper(10);
         MaterialModel dragonModel = materialModelLoader.loadTexturedModel("dragon.obj", "whiteIm.png");
-
         dragonModel.getMaterial().setReflectivity(1);
         dragonModel.getMaterial().setShineDamper(10);
 
@@ -57,12 +55,17 @@ public class App {
         dragonEntity.setScale(0.75f);
         dragonEntity.setPosition(new Vector3f(20, 5, 20));
 
-        TexturedModel terrainModel = terrainLoader.loadTerrain(
+        TexturePackModel terrainModel = terrainLoader.loadTerrain(
                 new Vector3f(-1000, 0, -1000),
                 new Vector3f(1000, 0, 1000),
                 100,
                 "grass.png",
-                100);
+                100,
+                "blendMap.png",
+                "mud.png",
+                "grassy2.png",
+                "grassFlowers.png",
+                "path.png");
 
 
         Terrain ter = new Terrain(terrainModel);

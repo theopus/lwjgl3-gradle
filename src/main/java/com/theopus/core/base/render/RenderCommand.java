@@ -1,5 +1,6 @@
 package com.theopus.core.base.render;
 
+import com.theopus.core.base.objects.BlendTexturePack;
 import com.theopus.core.base.objects.Entity;
 import com.theopus.core.base.objects.Model;
 import com.theopus.core.base.objects.Texture;
@@ -57,15 +58,34 @@ public interface RenderCommand<M extends Model, E extends Entity> {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureId());
     }
 
-    default void unbindTexture() {
+    default void bindTexurePack(BlendTexturePack texturePack){
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBlendMapTexture().getTextureId());
+        GL13.glActiveTexture(GL13.GL_TEXTURE1);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBackgroundTexture().getTextureId());
+        GL13.glActiveTexture(GL13.GL_TEXTURE2);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getrTexture().getTextureId());
+        GL13.glActiveTexture(GL13.GL_TEXTURE3);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getgTexture().getTextureId());
+        GL13.glActiveTexture(GL13.GL_TEXTURE4);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getbTexture().getTextureId());
+    }
+
+    default void unbindTexturePack(){
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE1);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE2);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE3);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE4);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
-
-//    default RenderCommand<E> fullrender(E t){
-//        return preRender(t)
-//                .render(t)
-//                .postRender(t);
-//    }
+    default void unbindTexture() {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+    }
 
 }

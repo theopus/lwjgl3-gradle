@@ -93,7 +93,7 @@ public class WindowManager implements Closeable {
 
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-        GL11.glViewport(0,0, width, height);
+//        GL11.glViewport(0,0, width, height);
         glfwSwapInterval(vSync);
         GL11.glClearColor(color.x, color.y, color.z, color.w);
         LOGGER.info("Finished init of GLFW.");

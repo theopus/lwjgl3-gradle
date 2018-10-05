@@ -1,13 +1,12 @@
 package com.theopus.core.terrain;
 
-import com.theopus.core.base.objects.Camera;
-import com.theopus.core.base.objects.Light;
-import com.theopus.core.base.objects.TexturedModel;
+import com.theopus.core.base.objects.*;
 import com.theopus.core.base.render.Attribute;
 import com.theopus.core.base.render.RenderCommand;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
-public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrain> {
+public class TerrainRenderCommand implements RenderCommand<TexturePackModel, Terrain> {
 
     private TerrainShader shader;
     private Camera camera;
@@ -20,11 +19,13 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
 
         shader.bind();
         shader.loadProjectionMatrix(pjMtx);
+        shader.loadFog(new Fog(new Vector3f(0.5f,0.5f,0.5f)));
+        shader.connectTextures();
         shader.unbind();
     }
 
     @Override
-    public RenderCommand<TexturedModel, Terrain> render(Terrain terrain) {
+    public RenderCommand<TexturePackModel, Terrain> render(Terrain terrain) {
         shader.loadTransformationMatrix(terrain.transformationMatrix());
 
         trianglesDraw(terrain.getTexturedModel());
@@ -32,7 +33,7 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
     }
 
     @Override
-    public RenderCommand<TexturedModel, Terrain> preRender(TexturedModel t) {
+    public RenderCommand<TexturePackModel, Terrain> preRender(TexturePackModel t) {
         // gl stuff
         // gl stuff
         enableDepthTest();
@@ -43,7 +44,7 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
         bindVbo(Attribute.VERTICES);
         bindVbo(Attribute.TEXTURE_COORDS);
         bindVbo(Attribute.NORMALS);
-        bindTexture(t.getTexture());
+//        bindTexture(t.getTexture());
 
         // shader
         shader.bind();
@@ -54,13 +55,13 @@ public class TerrainRenderCommand implements RenderCommand<TexturedModel, Terrai
     }
 
     @Override
-    public RenderCommand<TexturedModel, Terrain> postRender(TexturedModel t) {
+    public RenderCommand<TexturePackModel, Terrain> postRender(TexturePackModel t) {
         // unbind
         unbindVao();
         unbindVbo(Attribute.VERTICES);
         unbindVbo(Attribute.TEXTURE_COORDS);
         unbindVbo(Attribute.NORMALS);
-        unbindTexture();
+//        unbindTexture();
         // shader
         shader.unbind();
         return this;

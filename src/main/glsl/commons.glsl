@@ -36,3 +36,11 @@ vec4 getDiffuse(vec3 unitNormal, vec3 unitToLight, vec3 lightColor){
     vec3 diffuse = britghtness * lightColor;
     return vec4(diffuse, 1.0);
 }
+
+vec4 applyFog(Fog fog, vec4 out_Color, float fogFactor){
+    if (fog.enabled > 0) {
+        return mix(vec4(fog.color, 1.0), out_Color, fogFactor);
+    } else {
+        return out_Color;
+    }
+}

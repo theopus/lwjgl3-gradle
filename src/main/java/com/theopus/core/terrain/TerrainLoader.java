@@ -3,7 +3,7 @@ package com.theopus.core.terrain;
 import com.theopus.core.base.exceptions.EngineException;
 import com.theopus.core.base.load.MaterialModelLoader;
 import com.theopus.core.base.memory.MemoryContext;
-import com.theopus.core.base.objects.TexturedModel;
+import com.theopus.core.base.objects.TexturePackModel;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -15,7 +15,8 @@ public class TerrainLoader extends MaterialModelLoader {
         super(context);
     }
 
-    public TexturedModel loadTerrain(Vector3f a, Vector3f b, float step, String texture, float tilingPercent) {
+    public TexturePackModel loadTerrain(Vector3f a, Vector3f b, float step, String texture, float tilingPercent,
+                                        String blendMap, String bg, String r, String g, String bl) {
         if (a.y != 0 || b.y != 0) {
             throw new EngineException("Terrain model can be generated only at y=0.");
         }
@@ -64,12 +65,12 @@ public class TerrainLoader extends MaterialModelLoader {
             }
         }
 
-        return loadTexturedModel(
+        return loadTexturedPackModel(
                 toArray(vertices),
                 indexes.stream().mapToInt(Integer::intValue).toArray(),
                 toArray(textureCoords),
                 toArray(normals),
-                texture);
+                blendMap, bg, r, g, bl);
     }
 
     private int getIndex(List<Vector3f> points, List<Float> vertices, List<Float> textureCoords, List<Float> normals, Vector3f pos, float tiling) {

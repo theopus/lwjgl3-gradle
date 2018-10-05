@@ -111,7 +111,9 @@ public class Loader {
             MemoryUtil.memFree(byteBuffer);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
             LOGGER.info("Loaded texture. id:{}, width:{}, height:{}, size:{}", textureId, width, height, byteBuffer.limit());
-            return new Texture(textureId, width, height);
+            Texture texture = new Texture(textureId, width, height);
+            context.put(texture);
+            return texture;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

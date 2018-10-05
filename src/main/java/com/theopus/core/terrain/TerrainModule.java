@@ -51,7 +51,7 @@ public class TerrainModule {
     @Singleton
     @Provides
     @Inject
-    public BatchRenderer<TexturedModel, Terrain> renderer(TerrainRenderCommand command){
+    public BatchRenderer<TexturePackModel, Terrain> renderer(TerrainRenderCommand command){
         return Renderer.batchOf(command);
     }
 

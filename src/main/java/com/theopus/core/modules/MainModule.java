@@ -4,16 +4,13 @@ import com.theopus.core.App;
 import com.theopus.core.Loop;
 import com.theopus.core.Render;
 import com.theopus.core.base.load.MaterialModelLoader;
-import com.theopus.core.base.objects.MaterialModel;
-import com.theopus.core.base.objects.TexturedModel;
+import com.theopus.core.base.objects.*;
 import com.theopus.core.base.render.BatchRenderer;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.model.ModelEntity;
 import com.theopus.core.modules.configs.LoopConfig;
 import com.theopus.core.modules.configs.PerspectiveConfig;
 import com.theopus.core.modules.configs.WindowConfig;
-import com.theopus.core.base.objects.Camera;
-import com.theopus.core.base.objects.Light;
 import com.theopus.core.terrain.Terrain;
 import com.theopus.core.terrain.TerrainLoader;
 import com.theopus.core.utils.Maths;
@@ -108,7 +105,7 @@ public class MainModule {
                    MaterialModelLoader materialModelLoader,
                    TerrainLoader terrainLoader,
                    BatchRenderer<MaterialModel, ModelEntity> modelRenderer,
-                   BatchRenderer<TexturedModel, Terrain> terrainRenderer
+                   BatchRenderer<TexturePackModel, Terrain> terrainRenderer
     ) {
         return new App(wm, ctx, loop, materialModelLoader, terrainLoader, modelRenderer, terrainRenderer);
     }
@@ -117,7 +114,7 @@ public class MainModule {
     @Singleton
     @Inject
     public Render render(BatchRenderer<MaterialModel, ModelEntity> modelRenderer,
-                         BatchRenderer<TexturedModel, Terrain> terrainRenderer) {
+                         BatchRenderer<TexturePackModel, Terrain> terrainRenderer) {
         Render render = new Render();
         render.add(modelRenderer);
         render.add(terrainRenderer);
