@@ -56,11 +56,6 @@ public class App {
         dragonEntity.setPosition(new Vector3f(20, 5, 20));
 
         TexturePackModel terrainModel = terrainLoader.loadTerrain(
-                new Vector3f(-1000, 0, -1000),
-                new Vector3f(1000, 0, 1000),
-                100,
-                "grass.png",
-                100,
                 "blendMap.png",
                 "mud.png",
                 "grassy2.png",

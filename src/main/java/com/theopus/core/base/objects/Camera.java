@@ -22,19 +22,21 @@ public class Camera extends Entity implements InputHadler {
         return viewMatrix;
     }
 
+    float speed = 1f;
+
     @Override
     public void handle(KeyListener keyListener) {
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_W)) {
-            this.increasePosZ(-0.1f);
+            this.increasePosZ(-speed);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_S)) {
-            this.increasePosZ(0.1f);
+            this.increasePosZ(speed);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_A)) {
-            this.increasePosX(-0.1f);
+            this.increasePosX(-speed);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_D)) {
-            this.increasePosX(0.1f);
+            this.increasePosX(speed);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_Q)) {
             this.increaseRotY(-3);
@@ -49,10 +51,10 @@ public class Camera extends Entity implements InputHadler {
             this.increaseRotZ(3);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
-            this.increasePosY(0.1f);
+            this.increasePosY(speed);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_C)) {
-            this.increasePosY(-0.1f);
+            this.increasePosY(-speed);
         }
         if (keyListener.isKeyPressed(GLFW.GLFW_KEY_Y)) {
             this.setPosition(new Vector3f(0,0,0));

@@ -93,6 +93,16 @@ public class WindowManager implements Closeable {
 
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
+        //TODO MacViewPortIssue
+        /*
+            Just in case you still haven't figured this out, you need to use the 'glfwGetFramebufferSize' function to get the framebuffer size so the code would go something like this:
+
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+
+            glViewport(0, 0, width, height);
+
+         */
 //        GL11.glViewport(0,0, width, height);
         glfwSwapInterval(vSync);
         GL11.glClearColor(color.x, color.y, color.z, color.w);

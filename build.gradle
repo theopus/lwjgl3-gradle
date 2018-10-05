@@ -87,6 +87,12 @@ dependencies {
     compile "org.lwjgl:lwjgl-openal:${libs.lwjgl}:natives-linux"
     compile "org.lwjgl:lwjgl-openal:${libs.lwjgl}:natives-macos"
 
+    compile "org.lwjgl:lwjgl-par:${libs.lwjgl}"
+
+    compile "org.lwjgl:lwjgl-par:${libs.lwjgl}:natives-windows"
+    compile "org.lwjgl:lwjgl-par:${libs.lwjgl}:natives-linux"
+    compile "org.lwjgl:lwjgl-par:${libs.lwjgl}:natives-macos"
+
     compile "com.google.dagger:dagger:${libs.dagger2}"
     apt "com.google.dagger:dagger-compiler:${libs.dagger2}"
 

@@ -28,7 +28,7 @@ void main(void){
 
     toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;
 
-    passTextureCoords = textureCoords * 40.0;
+    passTextureCoords = textureCoords;
 
     float distance = length(toCamPosition.xyz);
     fogFactor = getFogFactor(distance, fog);

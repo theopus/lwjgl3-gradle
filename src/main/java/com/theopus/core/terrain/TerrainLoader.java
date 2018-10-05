@@ -7,12 +7,76 @@ import com.theopus.core.base.objects.TexturePackModel;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TerrainLoader extends MaterialModelLoader {
 
     public TerrainLoader(MemoryContext context) {
         super(context);
+    }
+
+
+    public TexturePackModel loadTerrain(String blendMap, String bg, String r, String g, String bl) {
+        int VERTICES_PER_SIDE = 100;
+        int TILE_SIZE = 800;
+        int TOTAL_NUMBER = VERTICES_PER_SIDE * VERTICES_PER_SIDE;
+
+        int QUADS_PER_SIDE = VERTICES_PER_SIDE - 1;
+        int TOTAL_QUADS = QUADS_PER_SIDE * QUADS_PER_SIDE;
+
+
+        float[] vertexes = new float[TOTAL_NUMBER * 3];
+        float[] uvs = new float[TOTAL_NUMBER * 2];
+        float[] normals = new float[TOTAL_NUMBER * 3];
+
+        int[] indexes = new int[TOTAL_QUADS * 6];
+        System.out.println(indexes.length);
+
+        int vertexesCount = 0;
+        int normalsCount = 0;
+        int uvsCount = 0;
+        //i==x
+        //j==z
+        for (int i = 0; i < VERTICES_PER_SIDE; i++) {
+            for (int j = 0; j < VERTICES_PER_SIDE; j++) {
+                vertexes[vertexesCount++] = (float)j/((float)VERTICES_PER_SIDE - 1) * TILE_SIZE;
+                vertexes[vertexesCount++] = 0;
+                vertexes[vertexesCount++] = (float)i/((float)VERTICES_PER_SIDE - 1) * TILE_SIZE;
+
+                uvs[uvsCount++] = (float) j / ((float) VERTICES_PER_SIDE - 1);
+                ;
+                uvs[uvsCount++] = (float) i / ((float) VERTICES_PER_SIDE - 1);
+
+                normals[normalsCount++] = 0;
+                normals[normalsCount++] = 1;
+                normals[normalsCount++] = 0;
+            }
+        }
+
+        int indexesCount = 0;
+        for (int x = 0; x < VERTICES_PER_SIDE - 1; x++) {
+            for (int z = 0; z < VERTICES_PER_SIDE - 1; z++) {
+                int topLeft = z + (x * VERTICES_PER_SIDE);
+                int topRight = topLeft + 1;
+                int bottomLeft = z + ((x + 1) * VERTICES_PER_SIDE);
+                int bottomRight = bottomLeft + 1;
+
+                indexes[indexesCount++] = topLeft;
+                indexes[indexesCount++] = bottomLeft;
+                indexes[indexesCount++] = topRight;
+                indexes[indexesCount++] = topRight;
+                indexes[indexesCount++] = bottomLeft;
+                indexes[indexesCount++] = bottomRight;
+            }
+        }
+
+        return loadTexturedPackModel(
+                vertexes,
+                indexes,
+                uvs,
+                normals,
+                blendMap, bg, r, g, bl);
     }
 
     public TexturePackModel loadTerrain(Vector3f a, Vector3f b, float step, String texture, float tilingPercent,
@@ -23,7 +87,7 @@ public class TerrainLoader extends MaterialModelLoader {
 
         float sideA = b.x - a.x;
         float sideB = b.z - a.z;
-        if (sideA != sideB){
+        if (sideA != sideB) {
             throw new EngineException("Should be diagonal of sqare" + a + " - " + b);
         }
 
@@ -99,7 +163,7 @@ public class TerrainLoader extends MaterialModelLoader {
         return direction ? value + step : value - step;
     }
 
-    private float[] toArray(List<Float> floats){
+    private float[] toArray(List<Float> floats) {
         float[] res = new float[floats.size()];
         for (int i = 0; i < floats.size(); i++) {
             res[i] = floats.get(i);

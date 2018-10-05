@@ -44,7 +44,8 @@ public class TerrainRenderCommand implements RenderCommand<TexturePackModel, Ter
         bindVbo(Attribute.VERTICES);
         bindVbo(Attribute.TEXTURE_COORDS);
         bindVbo(Attribute.NORMALS);
-//        bindTexture(t.getTexture());
+        bindTexurePack(t.getTexturePack());
+
 
         // shader
         shader.bind();
@@ -61,7 +62,7 @@ public class TerrainRenderCommand implements RenderCommand<TexturePackModel, Ter
         unbindVbo(Attribute.VERTICES);
         unbindVbo(Attribute.TEXTURE_COORDS);
         unbindVbo(Attribute.NORMALS);
-//        unbindTexture();
+        unbindTexturePack();
         // shader
         shader.unbind();
         return this;

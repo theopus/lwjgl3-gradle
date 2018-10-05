@@ -13,8 +13,7 @@ public class TerrainLoaderTest {
         MemoryContext ctx = new MemoryContext();
         TerrainLoader loader = new TerrainLoader(ctx);
 
-//        loader.loadTerrain(new Vector3f(0,0,0), new Vector3f(3,0,3), 0.2f, "whiteIm.png", 100);
-
+        loader.loadTerrain("","","","","");
 
     }
 }
