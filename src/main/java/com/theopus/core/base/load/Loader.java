@@ -1,13 +1,11 @@
 package com.theopus.core.base.load;
 
 import com.theopus.core.base.objects.Texture;
+import com.theopus.core.base.objects.Vao;
 import com.theopus.core.base.render.Attribute;
 import com.theopus.core.base.memory.MemoryContext;
 import de.matthiasmann.twl.utils.PNGDecoder;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +88,15 @@ public class Loader {
         LOGGER.info("Unbind vao");
     }
 
-    protected Texture loadTexture(String path) {
+    public Vao loadVao(float[] positions){
+        int vaoID = createVAO();
+        bindVao(vaoID);
+        int verticesVboId = writeInVao(Attribute.VERTICES, 2, positions);
+        unbindVao();
+        return new Vao(vaoID, positions.length/2);
+    }
+
+    public Texture loadTexture(String path) {
 
         try (InputStream resourceAsStream = Loader.class.getClassLoader().getResourceAsStream(path);){
             PNGDecoder decoder = new PNGDecoder(resourceAsStream);
@@ -109,6 +115,11 @@ public class Loader {
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
             byteBuffer.clear();
             MemoryUtil.memFree(byteBuffer);
+
+            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
+
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
             LOGGER.info("Loaded texture. id:{}, width:{}, height:{}, size:{}", textureId, width, height, byteBuffer.limit());
             Texture texture = new Texture(textureId, width, height);

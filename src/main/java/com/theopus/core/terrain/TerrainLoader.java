@@ -1,26 +1,66 @@
 package com.theopus.core.terrain;
 
 import com.theopus.core.base.exceptions.EngineException;
+import com.theopus.core.base.load.Loader;
 import com.theopus.core.base.load.MaterialModelLoader;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.base.objects.TexturePackModel;
+import de.matthiasmann.twl.utils.PNGDecoder;
 import org.joml.Vector3f;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TerrainLoader extends MaterialModelLoader {
+
+    int MAX_PIXEL_COLOUR = 256 + 256 + 256;
+    public static final int TILE_SIZE = 800;
 
     public TerrainLoader(MemoryContext context) {
         super(context);
     }
 
 
-    public TexturePackModel loadTerrain(String blendMap, String bg, String r, String g, String bl) {
-        int VERTICES_PER_SIDE = 100;
-        int TILE_SIZE = 800;
+    public Terrain loadTerrain(String blendMap, String bg, String r, String g, String bl) {
+
+        ByteBuffer buffer;
+        int width;
+        int height;
+
+        try (InputStream resourceAsStream = Loader.class.getClassLoader().getResourceAsStream("heightmap.png")) {
+            PNGDecoder decoder = new PNGDecoder(resourceAsStream);
+            width = decoder.getWidth();
+            height = decoder.getHeight();
+            buffer = ByteBuffer.allocate(4 * width * height);
+            decoder.decode(buffer, height * 4, PNGDecoder.Format.RGBA);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        int xpoiner = 0;
+        int ypoiner = 0;
+        int[][] values = new int[width][height];
+        for (int i = 0; i < buffer.limit(); i += 4) {
+            int integer = buffer.get(i) & 0b11111111;
+            int integer1 = buffer.get(i + 1) & 0b11111111;
+            int integer2 = buffer.get(i + 2) & 0b11111111;
+            int integer3 = buffer.get(i + 3) & 0b11111111;
+
+            values[xpoiner][ypoiner] = integer + integer1 + integer2;
+            ypoiner++;
+            if (ypoiner % width == 0) {
+                ypoiner = 0;
+                xpoiner++;
+            }
+        }
+
+
+        int VERTICES_PER_SIDE = width;
         int TOTAL_NUMBER = VERTICES_PER_SIDE * VERTICES_PER_SIDE;
+
 
         int QUADS_PER_SIDE = VERTICES_PER_SIDE - 1;
         int TOTAL_QUADS = QUADS_PER_SIDE * QUADS_PER_SIDE;
@@ -31,26 +71,29 @@ public class TerrainLoader extends MaterialModelLoader {
         float[] normals = new float[TOTAL_NUMBER * 3];
 
         int[] indexes = new int[TOTAL_QUADS * 6];
-        System.out.println(indexes.length);
 
         int vertexesCount = 0;
         int normalsCount = 0;
         int uvsCount = 0;
         //i==x
+
+        float[][] heights = new float[width][height];
         //j==z
         for (int i = 0; i < VERTICES_PER_SIDE; i++) {
             for (int j = 0; j < VERTICES_PER_SIDE; j++) {
-                vertexes[vertexesCount++] = (float)j/((float)VERTICES_PER_SIDE - 1) * TILE_SIZE;
-                vertexes[vertexesCount++] = 0;
-                vertexes[vertexesCount++] = (float)i/((float)VERTICES_PER_SIDE - 1) * TILE_SIZE;
+                vertexes[vertexesCount++] = (float) j / ((float) VERTICES_PER_SIDE - 1) * TILE_SIZE;
+                heights[j][i] = getHight(j, i, values, width, height);
+                vertexes[vertexesCount++] = heights[j][i];
+                vertexes[vertexesCount++] = (float) i / ((float) VERTICES_PER_SIDE - 1) * TILE_SIZE;
 
                 uvs[uvsCount++] = (float) j / ((float) VERTICES_PER_SIDE - 1);
                 ;
                 uvs[uvsCount++] = (float) i / ((float) VERTICES_PER_SIDE - 1);
 
-                normals[normalsCount++] = 0;
-                normals[normalsCount++] = 1;
-                normals[normalsCount++] = 0;
+                Vector3f vector3f = calculateNormal(j, i, values, width, height);
+                normals[normalsCount++] = vector3f.x;
+                normals[normalsCount++] = vector3f.y;
+                normals[normalsCount++] = vector3f.z;
             }
         }
 
@@ -71,12 +114,37 @@ public class TerrainLoader extends MaterialModelLoader {
             }
         }
 
-        return loadTexturedPackModel(
+        TexturePackModel texturePackModel = loadTexturedPackModel(
                 vertexes,
                 indexes,
                 uvs,
                 normals,
                 blendMap, bg, r, g, bl);
+        System.out.println(texturePackModel);
+        System.out.println(texturePackModel.getVao().getVaoId());
+        return new Terrain(texturePackModel, heights);
+    }
+
+
+    private float getHight(int x, int z, int[][] image, int heiht, int width) {
+        if (x < 0 || x >= heiht || z < 0 || z >= width) {
+            return 0;
+        }
+
+        float height = image[z][x];
+
+        height += MAX_PIXEL_COLOUR / 2f;
+        height /= MAX_PIXEL_COLOUR / 2f;
+        height *= 40;
+        return height - 80;
+    }
+
+    private Vector3f calculateNormal(int x, int z, int[][] image, int height, int width) {
+        float heidhtL = getHight(x - 1, z, image, height, width);
+        float heidhtR = getHight(x + 1, z, image, height, width);
+        float heidhtD = getHight(x, z - 1, image, height, width);
+        float heidhtU = getHight(x, z + 1, image, height, width);
+        return new Vector3f(heidhtL - heidhtR, 2f, heidhtD - heidhtU).normalize();
     }
 
     public TexturePackModel loadTerrain(Vector3f a, Vector3f b, float step, String texture, float tilingPercent,

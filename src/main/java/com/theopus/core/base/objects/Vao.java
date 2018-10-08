@@ -13,11 +13,16 @@ public class Vao implements Resource {
     private int indicesVboId;
     private int verticesVboId;
 
-    protected Vao(int vaoId, int vertexCount, int indicesVboId, int verticesVboId) {
+    public Vao(int vaoId, int vertexCount, int indicesVboId, int verticesVboId) {
         this.vaoId = vaoId;
         this.vertexCount = vertexCount;
         this.indicesVboId = indicesVboId;
         this.verticesVboId = verticesVboId;
+    }
+
+    public Vao(int vaoId, int vertexCount) {
+        this.vaoId = vaoId;
+        this.vertexCount = vertexCount;
     }
 
     public int getVaoId() {

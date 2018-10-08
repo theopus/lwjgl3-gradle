@@ -19,7 +19,7 @@ public class Fog {
     public Fog(Vector3f color) {
         this.enabled = true;
         this.color = color;
-        this.density = 0.0020f;
+        this.density = 0.007f;
         this.gradient = 1.5f;
     }
 

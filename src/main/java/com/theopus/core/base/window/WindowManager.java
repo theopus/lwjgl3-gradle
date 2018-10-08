@@ -11,7 +11,9 @@ import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.io.IOException;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -23,21 +25,30 @@ public class WindowManager implements Closeable {
 
     public static Logger LOGGER = LoggerFactory.getLogger(WindowManager.class);
 
-    private GLFWKeyCallbackI listener;
+    private InputHub hub;
     private Vector4f color;
     private boolean primitiveCompatible;
+    private GLFWKeyCallbackI listener;
     public int width;
     public int height;
     public long window;
     private int vSync;
 
-    public WindowManager(WindowConfig windowConfig, GLFWKeyCallbackI listener) {
+    public WindowManager(WindowConfig windowConfig, InputHub hub) {
         this.width = windowConfig.getWidth();
         this.height = windowConfig.getHeight();
-        this.listener = listener;
+        this.hub = hub;
         this.color = windowConfig.getColor();
         this.vSync = windowConfig.getvSync();
         this.primitiveCompatible = windowConfig.isPrimitivesCompatible();
+    }
+    public WindowManager(WindowConfig windowConfig, GLFWKeyCallbackI listener) {
+        this.width = windowConfig.getWidth();
+        this.height = windowConfig.getHeight();
+        this.color = windowConfig.getColor();
+        this.vSync = windowConfig.getvSync();
+        this.primitiveCompatible = windowConfig.isPrimitivesCompatible();
+        this.listener = listener;
     }
 
     public WindowManager(int width, int height) {
@@ -69,8 +80,15 @@ public class WindowManager implements Closeable {
 
         window = glfwCreateWindow(width, height, "Kurs", NULL, NULL);
 
-        if (listener != null) {
+
+        if (listener != null){
             glfwSetKeyCallback(window, listener);
+        }
+        if (hub != null) {
+            glfwSetKeyCallback(window, hub.keyCallback());
+            glfwSetMouseButtonCallback(window, hub.mouseButtonCallback());
+            glfwSetCursorPosCallback(window, hub.mousePosCallback());
+            glfwSetScrollCallback(window, hub.scrollCallback());
         }
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -93,17 +111,17 @@ public class WindowManager implements Closeable {
 
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-        //TODO MacViewPortIssue
-        /*
-            Just in case you still haven't figured this out, you need to use the 'glfwGetFramebufferSize' function to get the framebuffer size so the code would go something like this:
 
-            int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
+        //MacOS viewport fix
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer pWidth = stack.mallocInt(1);
+            IntBuffer pHeight = stack.mallocInt(1);
 
-            glViewport(0, 0, width, height);
+            glfwGetFramebufferSize(window, pWidth, pHeight);
+            LOGGER.info("Framebuffer sizes width: [{}], height: [{}]", pWidth.get(0), pHeight.get(0));
 
-         */
-//        GL11.glViewport(0,0, width, height);
+            GL11.glViewport(0,0, pWidth.get(0), pWidth.get(0));
+        }
         glfwSwapInterval(vSync);
         GL11.glClearColor(color.x, color.y, color.z, color.w);
         LOGGER.info("Finished init of GLFW.");

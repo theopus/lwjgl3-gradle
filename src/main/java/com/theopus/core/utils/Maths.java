@@ -1,9 +1,18 @@
 package com.theopus.core.utils;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Maths {
+
+    public static Matrix4f createTransformationMatrix2D(Vector2f translation, Vector2f scale) {
+        Matrix4f matrix = new Matrix4f();
+        matrix.identity();
+        matrix.translate(translation.x, translation.y, 0);
+        matrix.scale(new Vector3f(scale.x, scale.y, 1f));
+        return matrix;
+    }
 
     public static Matrix4f createTransformationMatrix(Vector3f vector3f, float rx, float ry, float rz, float scale) {
         return new Matrix4f()

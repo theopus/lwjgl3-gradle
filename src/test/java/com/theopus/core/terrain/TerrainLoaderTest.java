@@ -12,8 +12,5 @@ public class TerrainLoaderTest {
     public void loadTerrain() {
         MemoryContext ctx = new MemoryContext();
         TerrainLoader loader = new TerrainLoader(ctx);
-
-        loader.loadTerrain("","","","","");
-
     }
 }
