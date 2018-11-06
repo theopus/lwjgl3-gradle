@@ -113,15 +113,15 @@ public class WindowManager implements Closeable {
         GL.createCapabilities();
 
         //MacOS viewport fix
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-
-            glfwGetFramebufferSize(window, pWidth, pHeight);
-            LOGGER.info("Framebuffer sizes width: [{}], height: [{}]", pWidth.get(0), pHeight.get(0));
-
-            GL11.glViewport(0,0, pWidth.get(0), pWidth.get(0));
-        }
+//        try (MemoryStack stack = MemoryStack.stackPush()) {
+//            IntBuffer pWidth = stack.mallocInt(1);
+//            IntBuffer pHeight = stack.mallocInt(1);
+//
+//            glfwGetFramebufferSize(window, pWidth, pHeight);
+//            LOGGER.info("Framebuffer sizes width: [{}], height: [{}]", pWidth.get(0), pHeight.get(0));
+//
+//            GL11.glViewport(0,0, pWidth.get(0), pWidth.get(0));
+//        }
         glfwSwapInterval(vSync);
         GL11.glClearColor(color.x, color.y, color.z, color.w);
         LOGGER.info("Finished init of GLFW.");
