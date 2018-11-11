@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.floor;
 
 public class LabRastering {
 
@@ -28,19 +29,89 @@ public class LabRastering {
         final float step = 0.05f;
         List<Line> grid = createGrid(step);
 
-        List<Pixel> pixels = dda(-10, 0, 10, 6, step);
-
+        List<Pixel> dda = dda(-10, -2, 9, -18, step);
+        List<Pixel> bresenham = bresenham(-0, 9, 19, -8, step);
 
         while (!manager.windowShouldClose()) {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-
             grid.forEach(Line::draw);
-            pixels.forEach(Pixel::draw);
+
+            drawPixels(dda);
 
             manager.update();
         }
 
+    }
+
+    void drawPixels(List<Pixel> pixels){
+        pixels.forEach(Pixel::draw);
+    }
+
+    List<Pixel> bresenham(int x0, int y0, int x1, int y1, float st) {
+        if (abs(y1 - y0) < abs(x1 - x0)) {
+            if (x0 > x1) {
+                return bLineLow(x1, y1, x0, y0, st);
+            } else {
+                return bLineLow(x0, y0, x1, y1, st);
+            }
+        } else {
+            if (y0 > y1) {
+                return bLineHigh(x1, y1, x0, y0, st);
+            } else {
+                return bLineHigh(x0, y0, x1, y1, st);
+            }
+        }
+    }
+
+    private List<Pixel> bLineHigh(int x0, int y0, int x1, int y1, float st) {
+        List<Pixel> result = new ArrayList<>();
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+        int xi = 1;
+        if (dx < 0) {
+            xi = -1;
+            dx = -dx;
+        }
+
+        float D = 2 * dx - dy;
+        float x = x0;
+
+        for (int y = x0; y < y1; y++) {
+            result.add(new Pixel((int) x, y, st));
+            if (D > 0) {
+                x = x + xi;
+                D = D - 2 * dy;
+            }
+            D = D + 2 * dx;
+        }
+
+        return result;
+    }
+    private List<Pixel> bLineLow(int x0, int y0, int x1, int y1, float st) {
+        List<Pixel> result = new ArrayList<>();
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+
+        int yi = 1;
+        if (dy < 0) {
+            yi = -1;
+            dy = -dy;
+        }
+
+        float D = 2 * dy - dx;
+        float y = y0;
+
+        for (int x = x0; x < x1; x++) {
+            result.add(new Pixel(x, (int) y, st));
+            if (D > 0) {
+                y = y + yi;
+                D = D - 2 * dx;
+            }
+            D = D + 2 * dy;
+        }
+
+        return result;
     }
 
     List<Pixel> dda(int x0, int y0, int x1, int y1, float st) {

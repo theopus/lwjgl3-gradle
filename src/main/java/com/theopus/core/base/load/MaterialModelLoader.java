@@ -4,6 +4,7 @@ import com.theopus.core.base.objects.*;
 import com.theopus.core.base.render.Attribute;
 import com.theopus.core.base.memory.MemoryContext;
 import com.theopus.core.utils.ObjParser;
+import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,19 +70,19 @@ public class MaterialModelLoader extends Loader {
         return model;
     }
 
-    public TexturedModel loadTexturedModel(float[] positions, int[] indices, float[] textureCoords, float[] normals, String textureFile) {
+    public TexturedModel loadTexturedModel(float[] positions, int[] indices, float[] textureCoords) {
         int vaoID = createVAO();
+        System.out.println(GL11.glGetError());
         bindVao(vaoID);
         int indicesVboId = bindIndicesBuffer(indices);
 
         int verticesVboId = writeInVao(Attribute.VERTICES, 3, positions);
         int texturesVboId = writeInVao(Attribute.TEXTURE_COORDS, 2, textureCoords);
-        int normalsVboId = writeInVao(Attribute.NORMALS, 3, normals);
 
         unbindVao();
         unbindIndicesBuffer();
 
-        Texture texture = loadTexture(textureFile);
+//        Texture texture = loadTexture(textureFile);
 
         TexturedModel model = new TexturedModel(
                 new TexturedVao(vaoID,
@@ -89,11 +90,11 @@ public class MaterialModelLoader extends Loader {
                         indicesVboId,
                         verticesVboId,
                         texturesVboId,
-                        normalsVboId),
-                texture);
+                        0),
+                null);
 
         context.put(model);
-        LOGGER.info("Loaded textured mesh, vao {} tex {}", model.getVao().getVaoId(), texture.getTextureId());
+//        LOGGER.info("Loaded textured mesh, vao {} tex {}", model.getVao().getVaoId(), texture.getTextureId());
         return model;
     }
 
