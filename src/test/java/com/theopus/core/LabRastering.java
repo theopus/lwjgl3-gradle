@@ -26,11 +26,11 @@ public class LabRastering {
         manager.showWindow();
 
 
-        final float step = 0.05f;
-        List<Line> grid = createGrid(step);
+        final float width = 0.05f;
+        List<Line> grid = createGrid(width);
 
-        List<Pixel> dda = dda(-10, -2, 9, -18, step);
-        List<Pixel> bresenham = bresenham(-0, 9, 19, -8, step);
+        List<Pixel> dda = dda(-10, -2, 9, -18, width);
+        List<Pixel> bresenham = bresenham(-0, 9, 19, -8, width);
 
         while (!manager.windowShouldClose()) {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
@@ -48,18 +48,18 @@ public class LabRastering {
         pixels.forEach(Pixel::draw);
     }
 
-    List<Pixel> bresenham(int x0, int y0, int x1, int y1, float st) {
+    List<Pixel> bresenham(int x0, int y0, int x1, int y1, float width) {
         if (abs(y1 - y0) < abs(x1 - x0)) {
             if (x0 > x1) {
-                return bLineLow(x1, y1, x0, y0, st);
+                return bLineLow(x1, y1, x0, y0, width);
             } else {
-                return bLineLow(x0, y0, x1, y1, st);
+                return bLineLow(x0, y0, x1, y1, width);
             }
         } else {
             if (y0 > y1) {
-                return bLineHigh(x1, y1, x0, y0, st);
+                return bLineHigh(x1, y1, x0, y0, width);
             } else {
-                return bLineHigh(x0, y0, x1, y1, st);
+                return bLineHigh(x0, y0, x1, y1, width);
             }
         }
     }
@@ -114,7 +114,7 @@ public class LabRastering {
         return result;
     }
 
-    List<Pixel> dda(int x0, int y0, int x1, int y1, float st) {
+    List<Pixel> dda(int x0, int y0, int x1, int y1, float width) {
         List<Pixel> pixels = new ArrayList<>();
         int dx = x1 - x0;
         int dy = y1 - y0;
@@ -126,7 +126,7 @@ public class LabRastering {
         float x = x0;
         float y = y0;
         for (int i = 0; i <= steps; i++) {
-            pixels.add(new Pixel(((int) x), ((int) y), st));
+            pixels.add(new Pixel(((int) x), ((int) y), width));
             x += xinc;
             y += yinc;
         }

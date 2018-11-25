@@ -48,14 +48,12 @@ public class LabLineClipping {
         manager.createWindow();
         manager.showWindow();
 
-
-        lines.add(new Line(new Vector2f(-1, 0), new Vector2f(1, 0), new Vector3f(1, 0, 0)));
+        //lines.add(new Line(new Vector2f(-1, -1), new Vector2f(1, 1), new Vector3f(1, 0, 0)));
 
         while (!manager.windowShouldClose()) {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            //rect
             lines.forEach(this::drawLine);
-            drawRectangle(new Vector2f(-0.5f, 0.5f), 1f, new Vector3f(1, 0, 0));
+            drawRectangle(rectangle, new Vector3f(1, 0, 0));
 
             manager.update();
         }
@@ -236,17 +234,24 @@ public class LabLineClipping {
     }
 
 
-    private void drawRectangle(Vector2f point, float sideLength, Vector3f color) {
+    private void drawRectangle(Vector4f rectangle, Vector3f color) {
         GL11.glColor3f(color.x, color.y, color.z);
         GL11.glLineWidth(5f);
 
+        float xMin = rectangle.x;
+        float xMax = rectangle.y;
+        float yMin = rectangle.z;
+        float yMax = rectangle.w;
+
+
         GL11.glBegin(GL11.GL_LINE_STRIP);
         {
-            GL11.glVertex2d(point.x, point.y);
-            GL11.glVertex2d(point.x, point.y - sideLength);
-            GL11.glVertex2d(point.x + sideLength, point.y - sideLength);
-            GL11.glVertex2d(point.x + sideLength, point.y);
-            GL11.glVertex2d(point.x, point.y);
+
+            GL11.glVertex2d(xMin, yMin);
+            GL11.glVertex2d(xMax, yMin);
+            GL11.glVertex2d(xMax, yMax);
+            GL11.glVertex2d(xMin, yMax);
+            GL11.glVertex2d(xMin, yMin);
         }
         GL11.glEnd();
 
