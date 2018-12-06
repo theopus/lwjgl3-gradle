@@ -90,7 +90,7 @@ public class KursTriangulation {
                 new Point(0f, -0.6f),
         };
 
-        List<Line> lines = getLines(points);
+        List<Line> lines = new ArrayList<>();
 
         WindowManager manager = new WindowManager(new WindowConfig(
                 600, 400, new Vector4f(0, 0, 0, 1), true,
@@ -118,8 +118,7 @@ public class KursTriangulation {
 
     private static List<Line> triangulate(Point[] points) {
 
-        List<Line> lines = getLines(points);
-        List<Line> toDraw = new ArrayList<>(lines);
+        List<Line> toDraw = new ArrayList<>();
 
         List<Line> triangulate = new ArrayList<>();
 
@@ -128,7 +127,7 @@ public class KursTriangulation {
                 Point pointi = points[i];
                 Point pointj = points[j];
                 Line line = new Line(pointi, pointj);
-                if (!lines.contains(line) && line.distance() != 0) {
+                if (line.distance() != 0) {
                     if (!triangulate.contains(line)) {
                         triangulate.add(line);
                     }
@@ -137,7 +136,6 @@ public class KursTriangulation {
         }
         System.out.println(points.length);
         System.out.println(toDraw.size());
-        System.out.println(lines.size());
 
 
         System.out.println(findMin(triangulate));
@@ -145,7 +143,7 @@ public class KursTriangulation {
         System.out.println("To:Draw \n");
         System.out.println(toDraw);
 
-        lines.sort(new Comparator<Line>() {
+        triangulate.sort(new Comparator<Line>() {
             @Override
             public int compare(Line o1, Line o2) {
                 return (int) (o1.distance() - o2.distance());
@@ -156,15 +154,7 @@ public class KursTriangulation {
             Line min = findMin(triangulate);
             if (!toDraw.contains(min)) {
                 if (!intersects(min, toDraw)) {
-                    if (isInside(points, points.length, beetwenPoint(min))) {
-                        toDraw.add(min);
-                    } else {
-                        System.out.println("outside");
-                        System.out.println(min);
-                        System.out.println(beetwenPoint(min));
-                        triangulate.remove(min);
-                    }
-
+                    toDraw.add(min);
                 } else {
                     triangulate.remove(min);
                 }

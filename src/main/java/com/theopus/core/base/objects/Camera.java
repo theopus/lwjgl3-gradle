@@ -7,7 +7,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-public class Camera extends Entity implements InputHadler, Movable {
+public class  Camera extends Entity implements InputHadler, Movable {
 
     private Entity entity;
 
