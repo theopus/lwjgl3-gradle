@@ -5,6 +5,7 @@ import com.theopus.core.base.window.WindowManager;
 import com.theopus.core.modules.configs.WindowConfig;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -110,10 +111,20 @@ public class KursTriangulation {
 
         while (!manager.windowShouldClose()) {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            drawPoints(points);
             drawLines(lines);
             manager.update();
         }
 
+    }
+
+    private static void drawPoints(Point[] points) {
+        glBegin(GL_POINTS);
+        glPointSize(255f);
+        for (Point point : points) {
+            glVertex2f(point.x, point.y);
+        }
+        glEnd();
     }
 
     private static List<Line> triangulate(Point[] points) {
